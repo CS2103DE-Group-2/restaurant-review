@@ -81,25 +81,25 @@ This architecture separates user interaction, application logic, and data persis
 ### Class Diagram
 The class diagram below shows the main classes in the system and the relationships between them.
 
-![Class Diagram](docs/images/class-diagram.png)
+![Class Diagram](docs/architecture/class-diagram.png)
 
 ### Sequence Diagrams
-![Sequence Diagram](docs/images/seq-diagram-init-and-end.png)
+![Sequence Diagram](docs/architecture/seq-diagram-init-and-end.png)
 Initialisation and Program End
 
-![Sequence Diagram](docs/images/seq-diagram-add-review.png)
+![Sequence Diagram](docs/architecture/seq-diagram-add-review.png)
 Adding a Review
 
 *Placeholder: Insert sequence diagrams here.*\
 Deleting a Review
 
-![Sequence Diagram](docs/images/seq-diagram-add-tag.png)
+![Sequence Diagram](docs/architecture/seq-diagram-add-tag.png)
 Adding a Tag to a Review
 
-![Sequence Diagram](docs/images/seq-diagram-sort.png)
+![Sequence Diagram](docs/architecture/seq-diagram-sort.png)
 Sorting Reviews
 
-![Sequence Diagram](docs/images/seq-diagram-filter.png)
+![Sequence Diagram](docs/architecture/seq-diagram-filter.png)
 Filtering Reviews
 
 ### Use Case Diagram
