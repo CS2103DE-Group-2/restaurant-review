@@ -1,26 +1,34 @@
 package application.review;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import application.exception.InvalidArgumentException;
 
 /**
- * Class representing a list of reviews.
+ * Represents a collection of reviews and provides collection-level operations
+ * such as add, delete, filter, sort, and resolve status updates.
  */
 public class ReviewList {
-    private List<Review> reviews;
+    private final List<Review> reviews;
 
     /**
-     * Constructor for ReviewList class.
-     * @param reviews the list of reviews
+     * Constructs a {@code ReviewList} with the specified list of reviews.
+     *
+     * @param reviews the initial list of reviews
+     * @throws IllegalArgumentException if the provided list is null
      */
     public ReviewList(List<Review> reviews) {
-        this.reviews = reviews;
+        if (reviews == null) {
+            throw new IllegalArgumentException("Review list cannot be null.");
+        }
+        this.reviews = new ArrayList<>(reviews);
     }
 
     /**
-     * Constructor for ReviewList class with an empty list.
+     * Constructs an empty {@code ReviewList}.
      */
     public ReviewList() {
         this.reviews = new ArrayList<>();
@@ -28,37 +36,149 @@ public class ReviewList {
 
     /**
      * Adds a review to the list.
+     *
      * @param review the review to add
+     * @throws IllegalArgumentException if the review is null
      */
     public void addReview(Review review) {
+        if (review == null) {
+            throw new IllegalArgumentException("Review cannot be null.");
+        }
         reviews.add(review);
     }
 
     /**
-     * Removes a review from the list at the specified index.
-     * @param index the index of the review to remove
+     * Deletes the review at the specified 1-based index.
+     *
+     * @param index the 1-based index of the review to delete
+     * @return the deleted review
      * @throws InvalidArgumentException if the index is invalid
      */
-    public Review removeReview(int index) throws InvalidArgumentException {
-        if (isInvalidIndex(index)) {
-            throw new InvalidArgumentException("Invalid review index!");
-        }
+    public Review deleteReview(int index) throws InvalidArgumentException {
+        validateIndex(index);
         return reviews.remove(index - 1);
     }
 
     /**
-     * Checks if the specified index is valid.
+     * Returns the review at the specified 1-based index.
+     *
+     * @param index the 1-based index of the review to retrieve
+     * @return the review at the specified index
+     * @throws InvalidArgumentException if the index is invalid
+     */
+    public Review getReview(int index) throws InvalidArgumentException {
+        validateIndex(index);
+        return reviews.get(index - 1);
+    }
+
+    /**
+     * Marks the review at the specified 1-based index as resolved.
+     *
+     * @param index the 1-based index of the review
+     * @throws InvalidArgumentException if the index is invalid
+     */
+    public void markResolved(int index) throws InvalidArgumentException {
+        validateIndex(index);
+        reviews.get(index - 1).markResolved();
+    }
+
+    /**
+     * Marks the review at the specified 1-based index as outstanding.
+     *
+     * @param index the 1-based index of the review
+     * @throws InvalidArgumentException if the index is invalid
+     */
+    public void markOutstanding(int index) throws InvalidArgumentException {
+        validateIndex(index);
+        reviews.get(index - 1).markOutstanding();
+    }
+
+    /**
+     * Returns whether the specified 1-based index is valid.
      *
      * @param index the index to check
-     * @return  true if the index is valid, false otherwise
+     * @return {@code true} if the index is valid, {@code false} otherwise
      */
-    private boolean isInvalidIndex(int index) {
-        return index < 1 || index > reviews.size();
+    public boolean isValidIndex(int index) {
+        return index >= 1 && index <= reviews.size();
+    }
+
+    /**
+     * Returns a defensive copy of all reviews in this list.
+     *
+     * @return a copy of the reviews
+     */
+    public List<Review> getAllReviews() {
+        return new ArrayList<>(reviews);
+    }
+
+    /**
+     * Returns all reviews that contain the specified tag.
+     *
+     * @param tag the tag to filter by
+     * @return a list of reviews containing the tag
+     * @throws IllegalArgumentException if the tag is null
+     */
+    public List<Review> filterByTag(Tag tag) {
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag cannot be null.");
+        }
+
+        return reviews.stream()
+                .filter(review -> review.containsTag(tag))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns all reviews with the specified resolved status.
+     *
+     * @param isResolved the resolved status to match
+     * @return a list of reviews matching the resolved status
+     */
+    public List<Review> filterByResolvedStatus(boolean isResolved) {
+        return reviews.stream()
+                .filter(review -> review.isResolved() == isResolved)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns all reviews whose overall rating is at least the specified minimum.
+     *
+     * @param minimumRating the minimum overall rating
+     * @return a list of reviews meeting the rating threshold
+     */
+    public List<Review> filterByMinimumOverallRating(double minimumRating) {
+        return reviews.stream()
+                .filter(review -> review.getRating().getOverallRating() >= minimumRating)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a new list of reviews sorted by overall rating in descending order.
+     *
+     * @return a new list of reviews sorted by overall rating
+     */
+    public List<Review> sortByOverallRating() {
+        return reviews.stream()
+                .sorted(Comparator.comparingDouble(
+                        (Review review) -> review.getRating().getOverallRating())
+                        .reversed())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the number of reviews in the list.
+     *
+     * @return the number of reviews
+     */
+    public int size() {
+        return reviews.size();
     }
 
     /**
      * Returns a string representation of the list of reviews.
-     * @return a string representation of the list of reviews
+     *
+     * @return a formatted string representation of all reviews in the list
      */
     @Override
     public String toString() {
@@ -67,11 +187,29 @@ public class ReviewList {
         }
 
         StringBuilder sb = new StringBuilder();
-        int i = 1;
-        for (Review review : reviews) {
-            sb.append(i).append(".\n").append(review).append("\n");
+        for (int i = 0; i < reviews.size(); i++) {
+            sb.append(i + 1)
+                    .append(".")
+                    .append(System.lineSeparator())
+                    .append(reviews.get(i));
+
+            if (i < reviews.size() - 1) {
+                sb.append(System.lineSeparator()).append(System.lineSeparator());
+            }
         }
 
-        return sb.toString().stripTrailing();
+        return sb.toString();
+    }
+
+    /**
+     * Validates the specified 1-based index.
+     *
+     * @param index the index to validate
+     * @throws InvalidArgumentException if the index is invalid
+     */
+    private void validateIndex(int index) throws InvalidArgumentException {
+        if (!isValidIndex(index)) {
+            throw new InvalidArgumentException("Invalid review index!");
+        }
     }
 }

@@ -1,42 +1,100 @@
 package application.review;
 
 /**
- * Class representing a rating.
+ * Represents the structured ratings for a dining experience.
+ *
+ * Each review stores ratings for food, cleanliness, and service.
+ * An overall rating can be derived from these category ratings.
  */
 public class Rating {
-    private float rating;
+    public static final int MIN_RATING = 1;
+    public static final int MAX_RATING = 5;
+
+    private final int foodRating;
+    private final int cleanlinessRating;
+    private final int serviceRating;
 
     /**
-     * Constructor for Rating class.
-     * @param rating the rating of the review
+     * Constructs a {@code Rating} with ratings for food, cleanliness, and service.
+     *
+     * @param foodRating the food rating
+     * @param cleanlinessRating the cleanliness rating
+     * @param serviceRating the service rating
+     * @throws IllegalArgumentException if any rating is invalid
      */
-    public Rating(float rating) {
-        this.rating = rating;
+    public Rating(int foodRating, int cleanlinessRating, int serviceRating) {
+        if (!isValidRating(foodRating)
+                || !isValidRating(cleanlinessRating)
+                || !isValidRating(serviceRating)) {
+            throw new IllegalArgumentException(
+                    "All ratings must be integers between " + MIN_RATING + " and " + MAX_RATING + ".");
+        }
+
+        this.foodRating = foodRating;
+        this.cleanlinessRating = cleanlinessRating;
+        this.serviceRating = serviceRating;
     }
 
     /**
-     * Checks if the rating is valid.
-     * @param rating the rating to check
-     * @return true if the rating is valid, false otherwise
+     * Returns whether the given rating is valid.
+     *
+     * @param rating the rating to validate
+     * @return {@code true} if the rating is between 1 and 5 inclusive,
+     *         {@code false} otherwise
      */
-    public static boolean isValidRating(float rating) {
-        return rating >= 0 && rating <= 5;
+    public static boolean isValidRating(int rating) {
+        return rating >= MIN_RATING && rating <= MAX_RATING;
     }
 
     /**
-     * Getter for rating value.
-     * @return the float value of the rating
+     * Returns the food rating.
+     *
+     * @return the food rating
      */
-    public float getRatingValue() {
-        return rating;
+    public int getFoodRating() {
+        return foodRating;
+    }
+
+    /**
+     * Returns the cleanliness rating.
+     *
+     * @return the cleanliness rating
+     */
+    public int getCleanlinessRating() {
+        return cleanlinessRating;
+    }
+
+    /**
+     * Returns the service rating.
+     *
+     * @return the service rating
+     */
+    public int getServiceRating() {
+        return serviceRating;
+    }
+
+    /**
+     * Returns the derived overall rating.
+     *
+     * @return the average of the three category ratings
+     */
+    public double getOverallRating() {
+        return (foodRating + cleanlinessRating + serviceRating) / 3.0;
     }
 
     /**
      * Returns a string representation of the rating.
-     * @return a string representation of the rating
+     *
+     * @return a formatted string containing all category ratings and the overall rating
      */
     @Override
     public String toString() {
-        return String.format("Rating: %.1f", rating);
+        return String.format(
+                "Food: %d | Cleanliness: %d | Service: %d | Overall: %.1f",
+                foodRating,
+                cleanlinessRating,
+                serviceRating,
+                getOverallRating()
+        );
     }
 }
