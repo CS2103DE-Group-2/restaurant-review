@@ -14,6 +14,8 @@ import application.command.ExitCommand;
 import application.command.ListReviewsCommand;
 import application.command.SortReviewsCommand;
 import application.command.UnknownCommand;
+import application.exception.InvalidArgumentException;
+import application.exception.MissingArgumentException;
 
 /**
  * CommandParser class for parsing user input into commands.
@@ -24,8 +26,11 @@ public class CommandParser {
      *
      * @param input the user input string
      * @return a command containing its respective arguments
+     * @throws MissingArgumentException if the command is missing an argument
+     * @throws InvalidArgumentException if the command has an invalid argument
      */
-    public static Command getCommand(String input) {
+    public static Command getCommand(String input)
+        throws MissingArgumentException, InvalidArgumentException {
         String[] splitInput = ArgumentParser.splitIntoPair(input, " ");
 
         CommandType commandType = CommandType.getCommandType(splitInput[0].toLowerCase());

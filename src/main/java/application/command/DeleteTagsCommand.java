@@ -13,15 +13,27 @@ import java.util.Set;
 
 public class DeleteTagsCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default", "/tag");
-    private final Map<String, String> commandArgs;
+    private final int index;
+    private final Set<Tag> tagsToDelete;
 
     /**
      * Constructor for DeleteTagCommand class.
      *
      * @param commandArgs the arguments of the command
+     * @throws InvalidArgumentException if the index is not a number
+     * @throws MissingArgumentException if the index is missing
      */
-    public DeleteTagsCommand(Map<String, String> commandArgs) {
-        this.commandArgs = commandArgs;
+    public DeleteTagsCommand(Map<String, String> commandArgs)
+            throws InvalidArgumentException, MissingArgumentException {
+        String indexAsString = commandArgs.get("/default");
+        String tagsAsString = commandArgs.get("/tag");
+
+        this.index = ArgumentParser.toInt(indexAsString);
+        this.tagsToDelete = ArgumentParser.toTags(tagsAsString);
+
+        if (tagsToDelete.isEmpty()) {
+            throw new InvalidArgumentException("No tags provided!");
+        }
     }
 
 
@@ -35,24 +47,13 @@ public class DeleteTagsCommand extends Command {
      * @param reviewList the list of reviews
      * @param storage the storage object
      * @return a string representation of the command result
-     * @throws MissingArgumentException if any argument is missing
      * @throws InvalidArgumentException if any argument is in the wrong format
      */
     @Override
     public String execute(
             ReviewList reviewList,
             Storage storage
-    ) throws MissingArgumentException, InvalidArgumentException {
-        String indexAsString = commandArgs.get("/default");
-        String tagsAsString = commandArgs.get("/tag");
-
-        int index = ArgumentParser.toInt(indexAsString);
-        Set<Tag> tagsToDelete = ArgumentParser.toTags(tagsAsString);
-
-        if (tagsToDelete.isEmpty()) {
-            throw new InvalidArgumentException("No tags provided!");
-        }
-
+    ) throws InvalidArgumentException {
         //get the review object and its tags
         Review review = reviewList.getReview(index);
 

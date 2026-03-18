@@ -1,14 +1,16 @@
 package application.sorter;
 
+import application.parser.ArgumentParser;
+
 /**
  * Enum representing the different criteria for sorting reviews.
  */
 public enum SortCriterion {
-    OVERALL_SCORE("overall"),
-    FOOD_SCORE("food"),
-    CLEANLINESS_SCORE("clean"),
-    SERVICE_SCORE("service"),
-    TAG_COUNT("tag");
+    OVERALL_SCORE("overall scores"),
+    FOOD_SCORE("food scores"),
+    CLEANLINESS_SCORE("clean scores"),
+    SERVICE_SCORE("service scores"),
+    TAG_COUNT("tag count");
 
     private final String sortCriterionString;
 
@@ -26,8 +28,12 @@ public enum SortCriterion {
      * @return the sort criterion corresponding to the input string
      */
     public static SortCriterion getSortCriterion(String sortCriterionString) {
+        if (!ArgumentParser.isValidString(sortCriterionString)) {
+            return OVERALL_SCORE;
+        }
+
         for (SortCriterion criterion : SortCriterion.values()) {
-            if (criterion.sortCriterionString.startsWith(sortCriterionString)) {
+            if (criterion.sortCriterionString.startsWith(sortCriterionString.toLowerCase())) {
                 return criterion;
             }
         }

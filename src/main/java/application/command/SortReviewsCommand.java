@@ -16,35 +16,36 @@ import java.util.Set;
  */
 public class SortReviewsCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default", "/by");
-    private final Map<String, String> commandArgs;
+    private final SortOrder sortOrder;
+    private final SortCriterion sortCriterion;
+
 
     /**
      * Constructor for SortReviewsCommand class.
+     *
      * @param commandArgs the arguments of the command
      */
     public SortReviewsCommand(Map<String, String> commandArgs) {
-        this.commandArgs = commandArgs;
+        String sortOrderString = commandArgs.get("/default");
+        String sortCriterionString = commandArgs.get("/by");
+
+        this.sortOrder = SortOrder.getSortOrder(sortOrderString);
+        this.sortCriterion = SortCriterion.getSortCriterion(sortCriterionString);
     }
 
     /**
      * Executes the command to sort reviews.
+     *
      * @param reviewList the list of reviews
      * @param storage the storage object
      * @return a string representation of the command result
-     * @throws MissingArgumentException if any argument is missing
      * @throws InvalidArgumentException if any argument is in the wrong format
      */
     @Override
     public String execute(
             ReviewList reviewList,
             Storage storage
-    ) throws MissingArgumentException, InvalidArgumentException {
-        String sortOrderString = commandArgs.get("/default");
-        String sortCriterionString = commandArgs.get("/by");
-
-        SortOrder sortOrder = SortOrder.getSortOrder(sortOrderString);
-        SortCriterion sortCriterion = SortCriterion.getSortCriterion(sortCriterionString);
-
+    ) throws InvalidArgumentException {
         ReviewList sortedReviewList = ReviewSorter.sort(sortCriterion, sortOrder, reviewList);
 
         return String.format("""

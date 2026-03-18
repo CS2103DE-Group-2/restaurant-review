@@ -40,6 +40,7 @@ public class ArgumentParser {
 
     /**
      * Checks if the specified string is null or empty.
+     *
      * @param string the string to check
      * @return true if the string is not null or empty, false otherwise
      */
@@ -97,27 +98,24 @@ public class ArgumentParser {
 
     /**
      * Return a Rating based on the three scores.
-     * @param foodScoreAsString the food score
-     * @param cleanlinessScoreAsString the cleanliness score
-     * @param serviceScoreAsString the service score
+     *
+     * @param foodScore the food score
+     * @param cleanlinessScore the cleanliness score
+     * @param serviceScore the service score
      * @return a Rating object
-     * @throws MissingArgumentException if any score is empty or null
      * @throws InvalidArgumentException if any score is not a number
      */
     public static Rating toRating(
-            String foodScoreAsString,
-            String cleanlinessScoreAsString,
-            String serviceScoreAsString
-    ) throws MissingArgumentException, InvalidArgumentException {
-        double foodScore = ArgumentParser.toDouble(foodScoreAsString);
-        double cleanlinessScore = ArgumentParser.toDouble(cleanlinessScoreAsString);
-        double serviceScore = ArgumentParser.toDouble(serviceScoreAsString);
-
+            Double foodScore,
+            Double cleanlinessScore,
+            Double serviceScore
+    ) throws InvalidArgumentException {
         return new Rating(foodScore, cleanlinessScore, serviceScore);
     }
 
     /**
      * Returns a set of Tags based on a string of tags. An empty set is returned if the string is null or empty.
+     *
      * @param tagsAsString the string of tags
      * @return a set of Tag objects
      */
@@ -136,6 +134,7 @@ public class ArgumentParser {
 
     /**
      * Parses a date string into a LocalDate object.
+     *
      * @param dateAsString the date string to parse
      * @return a LocalDate object representing the date
      * @throws MissingArgumentException if the date string is empty or null
@@ -161,6 +160,7 @@ public class ArgumentParser {
 
     /**
      * Formats a LocalDate object into a specific String format.
+     *
      * @param date the LocalDate object to format
      * @return a formatted String representing the date
      */

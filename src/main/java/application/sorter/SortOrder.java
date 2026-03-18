@@ -31,7 +31,7 @@ public enum SortOrder {
         }
 
         for (SortOrder order : SortOrder.values()) {
-            if (order.sortOrderString.startsWith(sortOrderString)) {
+            if (order.sortOrderString.startsWith(sortOrderString.toLowerCase())) {
                 return order;
             }
         }

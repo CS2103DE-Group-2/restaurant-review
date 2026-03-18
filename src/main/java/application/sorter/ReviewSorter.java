@@ -12,10 +12,12 @@ import java.util.function.Function;
 public class ReviewSorter {
     /**
      * Sorts the given review list based on the given criterion and sort order.
+     *
      * @param sortCriterion the criterion to sort by
      * @param sortOrder the sort order (ascending or descending)
      * @param reviewList the list of reviews to sort
      * @return a new sorted list of reviews
+     * @throws InvalidArgumentException if the sort order is invalid
      */
     public static ReviewList sort(
             SortCriterion sortCriterion,

@@ -9,6 +9,7 @@ import application.storage.Storage;
 public class UnknownCommand extends Command {
     /**
      * Returns a message indicating that the command is unknown.
+     *
      * @param reviewList the list of reviews
      * @param storage the storage object
      * @return a string indicating that the command is unknown

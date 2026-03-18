@@ -9,6 +9,7 @@ import application.storage.Storage;
 public class ExitCommand extends Command {
     /**
      * Returns true, as this command should terminate the program.
+     *
      * @return true
      */
     @Override
@@ -18,6 +19,7 @@ public class ExitCommand extends Command {
 
     /**
      * Returns a message indicating that the program has exited.
+     *
      * @param reviewList the list of reviews
      * @param storage the storage object
      * @return a string indicating that the program has exited

@@ -198,7 +198,7 @@ public class ReviewList {
     @Override
     public String toString() {
         if (reviews.isEmpty()) {
-            return "No reviews yet!";
+            return "Review list is empty.";
         }
 
         StringBuilder sb = new StringBuilder();
