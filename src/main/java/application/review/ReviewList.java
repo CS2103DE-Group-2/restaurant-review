@@ -156,13 +156,26 @@ public class ReviewList {
     /**
      * Returns a new list of reviews sorted by overall score in descending order.
      *
-     * @return a new list of reviews sorted by overall score
+     * @return a new list of reviews sorted by overall score in descending order.
      */
     public List<Review> sortByDescendingOverallScore() {
         return reviews.stream()
                 .sorted(Comparator.comparingDouble(
                         (Review review) -> review.getRating().getOverallScore())
                         .reversed())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns a new list of reviews sorted by overall score in ascending order.
+     *
+     * @return a new list of reviews sorted by overall score in ascending order.
+     */
+    public List<Review> sortByAscendingOverallScore() {
+        return reviews.stream()
+                .sorted(Comparator.comparingDouble(
+                                (Review review) -> review.getRating().getOverallScore())
+                )
                 .collect(Collectors.toList());
     }
 
