@@ -1,7 +1,6 @@
 package application.command;
 
 import application.exception.InvalidArgumentException;
-import application.exception.MissingArgumentException;
 import application.review.ReviewList;
 import application.sorter.ReviewSorter;
 import application.sorter.SortCriterion;
