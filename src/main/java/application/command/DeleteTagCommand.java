@@ -10,7 +10,6 @@ import application.storage.Storage;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DeleteTagCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default", "/tag");
@@ -48,9 +47,9 @@ public class DeleteTagCommand extends Command {
         String tagsAsString = commandArgs.get("/tag");
 
         int index = ArgumentParser.toInt(indexAsString);
-        Set<Tag> tags = ArgumentParser.toTags(tagsAsString);
+        Set<Tag> tagsToDelete = ArgumentParser.toTags(tagsAsString);
 
-        if (tags.isEmpty()) {
+        if (tagsToDelete.isEmpty()) {
             throw new InvalidArgumentException("No tags provided!");
         }
 
@@ -58,12 +57,12 @@ public class DeleteTagCommand extends Command {
         Review review = reviewList.getReview(index);
 
         //get the new tags that are already in the review
-        Set<Tag> existingTags = review.getMatchingTags(tags);
+        Set<Tag> existingTags = review.getMatchingTags(tagsToDelete);
 
         //get the new tags that are not in the review
-        Set<Tag> nonExistentTags = review.getNonMatchingTags(tags);
+        Set<Tag> nonExistentTags = review.getNonMatchingTags(tagsToDelete);
 
-        //delete the existing tags to the review
+        //delete the existing tags from the review
         existingTags.forEach(review::removeTag);
 
         return String.format("""

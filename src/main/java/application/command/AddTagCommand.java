@@ -10,7 +10,6 @@ import application.storage.Storage;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class AddTagCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default", "/tag");
@@ -48,9 +47,9 @@ public class AddTagCommand extends Command {
         String tagsAsString = commandArgs.get("/tag");
 
         int index = ArgumentParser.toInt(indexAsString);
-        Set<Tag> tags = ArgumentParser.toTags(tagsAsString);
+        Set<Tag> tagsToAdd = ArgumentParser.toTags(tagsAsString);
 
-        if (tags.isEmpty()) {
+        if (tagsToAdd.isEmpty()) {
             throw new InvalidArgumentException("No tags provided!");
         }
 
@@ -58,10 +57,10 @@ public class AddTagCommand extends Command {
         Review review = reviewList.getReview(index);
 
         //get the new tags that are already in the review
-        Set<Tag> existingTags = review.getMatchingTags(tags);
+        Set<Tag> existingTags = review.getMatchingTags(tagsToAdd);
 
         //get the new tags that are not in the review
-        Set<Tag> nonExistentTags = review.getNonMatchingTags(tags);
+        Set<Tag> nonExistentTags = review.getNonMatchingTags(tagsToAdd);
 
         //add the non-existent tags to the review
         nonExistentTags.forEach(review::addTag);

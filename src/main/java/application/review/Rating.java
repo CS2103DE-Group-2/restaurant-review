@@ -4,9 +4,10 @@ import application.exception.InvalidArgumentException;
 
 /**
  * Represents the structured ratings for a dining experience.
- *
+ * <p>
  * Each review stores ratings for food, cleanliness, and service.
  * An overall rating can be derived from these category ratings.
+ * </p>
  */
 public class Rating {
     public static final double RATING_MIN = 1.0;
