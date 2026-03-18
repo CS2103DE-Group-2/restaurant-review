@@ -1,10 +1,7 @@
 package application.command;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
@@ -50,22 +47,14 @@ public class AddReviewCommand extends Command {
         String serviceScoreAsString = commandArgs.get("/service");
         String tagsAsString = commandArgs.get("/tag");
 
-        //convert scores to doubles
-        double foodScore = ArgumentParser.toDouble(foodScoreAsString);
-        double cleanlinessScore = ArgumentParser.toDouble(cleanlinessScoreAsString);
-        double serviceScore = ArgumentParser.toDouble(serviceScoreAsString);
-
         //create new Rating object with scores
-        Rating rating = new Rating(foodScore, cleanlinessScore, serviceScore);
+        Rating rating = ArgumentParser.toRating(
+                foodScoreAsString,
+                cleanlinessScoreAsString,
+                serviceScoreAsString
+        );
 
-        if (ArgumentParser.isValidString(tagsAsString)) {}
-        //separate tags in string format
-        String[] listOfTagsAsString = tagsAsString.trim().split(" ");
-
-        //map each tag to a Tag object
-        Set<Tag> tags = Arrays.stream(listOfTagsAsString)
-                .map(Tag::new)
-                .collect(Collectors.toSet());
+        Set<Tag> tags = ArgumentParser.toTags(tagsAsString);
 
         //create new Review object
         Review review = new Review(reviewBody, rating, tags);

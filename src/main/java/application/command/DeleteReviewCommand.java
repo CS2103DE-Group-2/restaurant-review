@@ -34,10 +34,12 @@ public class DeleteReviewCommand extends Command {
      * @throws InvalidArgumentException if the index is in the wrong format
      */
     @Override
-    public String execute(ReviewList reviewList, Storage storage)
-            throws MissingArgumentException, InvalidArgumentException {
+    public String execute(
+            ReviewList reviewList,
+            Storage storage
+    ) throws MissingArgumentException, InvalidArgumentException {
         int index = ArgumentParser.toInt(commandArgs.get("/default"));
-        Review review = reviewList.removeReview(index);
+        Review review = reviewList.deleteReview(index);
 
         return String.format("%s\ndeleted!", review);
     }

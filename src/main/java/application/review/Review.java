@@ -166,13 +166,14 @@ public class Review {
     public String toString() {
         String resolvedStatus = isResolved ? "Resolved" : "Outstanding";
         String tagDisplay = tags.isEmpty() ? "No tags" : tags.toString();
+        String reviewDisplay = reviewBody.isBlank() ? "No review" : reviewBody;
 
         return String.format(
                 "%s%nStatus: %s%nTags: %s%nReview: %s",
                 rating,
                 resolvedStatus,
                 tagDisplay,
-                reviewBody
+                reviewDisplay
         );
     }
 }

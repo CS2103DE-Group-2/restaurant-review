@@ -30,7 +30,7 @@ public enum CommandType {
      * @return the command type of the input
      */
     public static CommandType getCommandType(String input) {
-        if (ArgumentParser.isInvalidString(input)) {
+        if (!ArgumentParser.isValidString(input)) {
             return UNKNOWN;
         }
 
