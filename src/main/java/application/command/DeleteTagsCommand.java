@@ -29,7 +29,7 @@ public class DeleteTagsCommand extends Command {
         String tagsAsString = commandArgs.get("/tag");
 
         this.index = ArgumentParser.toInt(indexAsString);
-        this.tagsToDelete = ArgumentParser.toTags(tagsAsString);
+        this.tagsToDelete = Tag.toTags(tagsAsString);
 
         if (tagsToDelete.isEmpty()) {
             throw new InvalidArgumentException("No tags provided!");
@@ -44,7 +44,7 @@ public class DeleteTagsCommand extends Command {
      * Tags that do not exist in the review are not deleted.
      * </p>
      *
-     * @param reviewList the list of reviews
+     * @param reviews the list of reviews
      * @param storage the storage object
      * @return a string representation of the command result
      * @throws InvalidArgumentException if any argument is in the wrong format

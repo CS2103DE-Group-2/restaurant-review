@@ -42,7 +42,7 @@ public class AddReviewCommand extends Command {
         this.foodScore = ArgumentParser.toDouble(foodScoreAsString);
         this.cleanlinessScore = ArgumentParser.toDouble(cleanlinessScoreAsString);
         this.serviceScore = ArgumentParser.toDouble(serviceScoreAsString);
-        this.tagsToAdd = ArgumentParser.toTags(tagsToAddAsString);
+        this.tagsToAdd = Tag.toTags(tagsToAddAsString);
     }
 
     /**

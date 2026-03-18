@@ -32,7 +32,7 @@ public class AddTagsCommand extends Command {
         String tagsAsString = commandArgs.get("/tag");
 
         this.index = ArgumentParser.toInt(indexAsString);
-        this.tagsToAdd = ArgumentParser.toTags(tagsAsString);
+        this.tagsToAdd = Tag.toTags(tagsAsString);
 
         if (tagsToAdd.isEmpty()) {
             throw new InvalidArgumentException("No tags provided!");
@@ -46,7 +46,7 @@ public class AddTagsCommand extends Command {
      * Tags that already exist in the review are not added again.
      * </p>
      *
-     * @param reviewList the list of reviews
+     * @param reviews the list of reviews
      * @param storage the storage object
      * @return a string representation of the command result
      * @throws InvalidArgumentException if any argument is in the wrong format

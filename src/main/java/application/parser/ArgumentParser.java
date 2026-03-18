@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
-import application.review.Rating;
 import application.review.Tag;
 
 /**
@@ -94,25 +93,6 @@ public class ArgumentParser {
         }
 
         return score;
-    }
-
-    /**
-     * Returns a set of Tags based on a string of tags. An empty set is returned if the string is null or empty.
-     *
-     * @param tagsAsString the string of tags
-     * @return a set of Tag objects
-     */
-    public static Set<Tag> toTags(String tagsAsString) {
-        if (!isValidString(tagsAsString)) {
-            return new HashSet<>();
-        }
-
-        //separate tags in string format
-        String[] listOfTagsAsString = tagsAsString.trim().split(" ");
-
-        return Arrays.stream(listOfTagsAsString)
-                .map(Tag::new)
-                .collect(Collectors.toSet());
     }
 
     /**
