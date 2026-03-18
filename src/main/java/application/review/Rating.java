@@ -7,8 +7,8 @@ package application.review;
  * An overall rating can be derived from these category ratings.
  */
 public class Rating {
-    public static final int MIN_RATING = 1;
-    public static final int MAX_RATING = 5;
+    public static final int RATING_MIN = 1;
+    public static final int RATING_MAX = 5;
 
     private final int foodRating;
     private final int cleanlinessRating;
@@ -27,7 +27,7 @@ public class Rating {
                 || !isValidRating(cleanlinessRating)
                 || !isValidRating(serviceRating)) {
             throw new IllegalArgumentException(
-                    "All ratings must be integers between " + MIN_RATING + " and " + MAX_RATING + ".");
+                    "All ratings must be integers between " + RATING_MIN + " and " + RATING_MAX + ".");
         }
 
         this.foodRating = foodRating;
@@ -43,7 +43,7 @@ public class Rating {
      *         {@code false} otherwise
      */
     public static boolean isValidRating(int rating) {
-        return rating >= MIN_RATING && rating <= MAX_RATING;
+        return rating >= RATING_MIN && rating <= RATING_MAX;
     }
 
     /**
