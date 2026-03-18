@@ -1,0 +1,69 @@
+/* ============================================================
+   Restaurant Feedback Kiosk — JavaFX CSS Theme
+   Applies on top of inline styles; inline styles take priority
+   for per-state changes (selected, disabled, etc.)
+   ============================================================ */
+
+/* ── Root / global ────────────────────────────────────────── */
+.root {
+    -fx-font-family: "System";
+    -fx-background-color: #F4F4F8;
+}
+
+/* ── Scroll pane transparency ─────────────────────────────── */
+.scroll-pane,
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .scroll-bar:horizontal,
+.scroll-pane > .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.progress-bar > .track {
+    -fx-background-color: #EBEBEB;
+    -fx-background-radius: 8;
+}
+
+.progress-bar > .bar {
+    -fx-background-color: #FF6B35;
+    -fx-background-radius: 8;
+    -fx-background-insets: 0;
+}
+
+/* ── Text area ────────────────────────────────────────────── */
+.text-area {
+    -fx-background-color: #FAFAFA;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-focus-color: #FF6B35;
+    -fx-faint-focus-color: transparent;
+}
+
+.text-area:focused {
+    -fx-border-color: #FF6B35;
+}
+
+.text-area .content {
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 8;
+}
+
+/* ── Buttons — generic hover/press feedback ───────────────── */
+.button:hover {
+    -fx-opacity: 0.88;
+}
+
+.button:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* ── Labels inside scroll containers ─────────────────────── */
+.label {
+    -fx-wrap-text: true;
+}
