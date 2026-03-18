@@ -4,7 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import application.command.*;
+import application.command.AddReviewCommand;
+import application.command.AddTagCommand;
+import application.command.Command;
+import application.command.CommandType;
+import application.command.DeleteReviewCommand;
+import application.command.DeleteTagCommand;
+import application.command.ExitCommand;
+import application.command.ListReviewsCommand;
+import application.command.UnknownCommand;
 
 /**
  * CommandParser class for parsing user input into commands.
@@ -35,6 +43,10 @@ public class CommandParser {
         case ADD_TAG:
             arguments = parseArguments(AddTagCommand.DELIMITERS, splitInput[1]);
             command = new AddTagCommand(arguments);
+            break;
+        case DELETE_TAG:
+            arguments = parseArguments(DeleteTagCommand.DELIMITERS, splitInput[1]);
+            command = new DeleteTagCommand(arguments);
             break;
         case DELETE:
             arguments = parseArguments(DeleteReviewCommand.DELIMITERS, splitInput[1]);

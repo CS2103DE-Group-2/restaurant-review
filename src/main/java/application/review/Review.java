@@ -5,6 +5,7 @@ import application.exception.InvalidArgumentException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Represents a single anonymous customer review.
@@ -155,6 +156,28 @@ public class Review {
      */
     public void markOutstanding() {
         isResolved = false;
+    }
+
+    /**
+     * Returns a set of tags that match existing tags in this review.
+     * @param tagsToMatch the set of tags to match
+     * @return a set of tags that match existing tags in this review
+     */
+    public Set<Tag> getMatchingTags(Set<Tag> tagsToMatch) {
+        return tagsToMatch.stream()
+                .filter(tags::contains)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a set of tags that do not match existing tags in this review.
+     * @param tagsToMatch the set of tags to match
+     * @return a set of tags that do not match existing tags in this review
+     */
+    public Set<Tag> getNonMatchingTags(Set<Tag> tagsToMatch) {
+        return tagsToMatch.stream()
+                .filter(tag -> !tags.contains(tag))
+                .collect(Collectors.toSet());
     }
 
     /**

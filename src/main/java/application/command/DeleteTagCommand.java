@@ -12,25 +12,25 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class AddTagCommand extends Command {
+public class DeleteTagCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default", "/tag");
     private final Map<String, String> commandArgs;
 
     /**
-     * Constructor for AddTagCommand class.
+     * Constructor for DeleteTagCommand class.
      *
      * @param commandArgs the arguments of the command
      */
-    public AddTagCommand(Map<String, String> commandArgs) {
+    public DeleteTagCommand(Map<String, String> commandArgs) {
         this.commandArgs = commandArgs;
     }
 
 
     /**
-     * Executes the command to add tags to a review.
+     * Executes the command to delete tags from a review.
      *
      * <p>
-     * Tags that already exist in the review are not added again.
+     * Tags that do not exist in the review are not deleted.
      * </p>
      *
      * @param reviewList the list of reviews
@@ -63,13 +63,13 @@ public class AddTagCommand extends Command {
         //get the new tags that are not in the review
         Set<Tag> nonExistentTags = review.getNonMatchingTags(tags);
 
-        //add the non-existent tags to the review
-        nonExistentTags.forEach(review::addTag);
+        //delete the existing tags to the review
+        existingTags.forEach(review::removeTag);
 
         return String.format("""
-                Existing tags not added: %s
-                New tags added: %s
+                Tags that do not exist in review: %s
+                Tags deleted: %s
                 Updated review:
-                %s""", existingTags, nonExistentTags, review);
+                %s""", nonExistentTags, existingTags, review);
     }
 }

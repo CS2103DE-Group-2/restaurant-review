@@ -114,20 +114,6 @@ public class ReviewList {
     }
 
     /**
-     * Adds the specified tags to the review at the specified index.
-     * @param index 1-based index of the review
-     * @param tags set of tags to add
-     * @return the modified review
-     * @throws InvalidArgumentException if the index is invalid
-     */
-    public Review addTagToReview(int index, Set<Tag> tags) throws InvalidArgumentException {
-        validateIndex(index);
-        Review review = reviews.get(index - 1);
-        tags.forEach(review::addTag);
-        return review;
-    }
-
-    /**
      * Returns all reviews that contain the specified tag.
      *
      * @param tag the tag to filter by
