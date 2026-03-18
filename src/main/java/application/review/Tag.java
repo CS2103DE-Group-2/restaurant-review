@@ -4,13 +4,12 @@ import java.util.Objects;
 
 /**
  * Represents a tag attached to a review for categorisation and filtering.
- *
+ * <p>
  * Examples of tags include {@code food}, {@code service}, and
  * {@code slow service}.
+ * </p>
  */
-public class Tag {
-    private final String tagName;
-
+public record Tag(String tagName) {
     /**
      * Constructs a {@code Tag} with the specified tag name.
      *
@@ -29,9 +28,9 @@ public class Tag {
      *
      * @param tagName the tag name to validate
      * @return {@code true} if the tag name is non-null and non-blank,
-     *         {@code false} otherwise
+     * {@code false} otherwise
      */
-    public static boolean isValidTagName(String tagName) {
+    private boolean isValidTagName(String tagName) {
         return tagName != null && !tagName.isBlank();
     }
 
@@ -66,11 +65,11 @@ public class Tag {
             return true;
         }
 
-        if (!(obj instanceof Tag other)) {
+        if (!(obj instanceof Tag(String name))) {
             return false;
         }
 
-        return tagName.equalsIgnoreCase(other.tagName);
+        return tagName.equalsIgnoreCase(name);
     }
 
     /**
