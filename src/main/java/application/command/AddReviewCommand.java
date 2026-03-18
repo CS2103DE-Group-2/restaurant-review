@@ -47,7 +47,7 @@ public class AddReviewCommand extends Command {
         String serviceScoreAsString = commandArgs.get("/service");
         String tagsAsString = commandArgs.get("/tag");
 
-        //create new Rating object with scores
+        //create a new Rating object with scores
         Rating rating = ArgumentParser.toRating(
                 foodScoreAsString,
                 cleanlinessScoreAsString,
@@ -56,7 +56,7 @@ public class AddReviewCommand extends Command {
 
         Set<Tag> tags = ArgumentParser.toTags(tagsAsString);
 
-        //create new Review object
+        //create a new Review object
         Review review = new Review(reviewBody, rating, tags);
 
         reviewList.addReview(review);
