@@ -1,7 +1,7 @@
 package application.command;
 
 import application.exception.InvalidArgumentException;
-import application.review.OperationCriterion;
+import application.review.Criterion;
 import application.review.ReviewList;
 import application.review.SortOrder;
 import application.storage.Storage;
@@ -15,7 +15,7 @@ import java.util.Set;
 public class SortReviewsCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default", "/by");
     private final SortOrder sortOrder;
-    private final OperationCriterion sortCriterion;
+    private final Criterion sortCriterion;
 
 
     /**
@@ -24,11 +24,11 @@ public class SortReviewsCommand extends Command {
      * @param commandArgs the arguments of the command
      */
     public SortReviewsCommand(Map<String, String> commandArgs) {
-        String sortOrderString = commandArgs.get("/default");
-        String sortCriterionString = commandArgs.get("/by");
+        String sortOrderAsString = commandArgs.get("/default");
+        String sortCriterionAsString = commandArgs.get("/by");
 
-        this.sortOrder = SortOrder.getSortOrder(sortOrderString);
-        this.sortCriterion = OperationCriterion.getOperationCriterion(sortCriterionString);
+        this.sortOrder = SortOrder.getSortOrder(sortOrderAsString);
+        this.sortCriterion = Criterion.getCriterion(sortCriterionAsString);
     }
 
     /**
