@@ -62,4 +62,10 @@ public class CommandParserTest {
         Command command = CommandParser.getCommand("deletetag 1 /tag OldTag");
         assertTrue(command instanceof DeleteTagsCommand);
     }
+
+    @Test
+    public void getCommand_emptyInput_returnsUnknownCommand() throws InvalidArgumentException, MissingArgumentException {
+        assertTrue(CommandParser.getCommand("") instanceof UnknownCommand);
+        assertTrue(CommandParser.getCommand("   ") instanceof UnknownCommand);
+    }
 }

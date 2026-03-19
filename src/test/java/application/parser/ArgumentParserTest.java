@@ -48,7 +48,10 @@ public class ArgumentParserTest {
     @Test
     public void toInt_invalidInput_throwsException() {
         assertThrows(MissingArgumentException.class, () -> ArgumentParser.toInt(null));
+        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toInt(""));
+        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toInt("   "));
         assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toInt("abc"));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toInt("12.34"));
     }
 
     @Test
@@ -58,7 +61,10 @@ public class ArgumentParserTest {
 
     @Test
     public void toDouble_invalidInput_throwsException() {
+        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toDouble(null));
         assertThrows(MissingArgumentException.class, () -> ArgumentParser.toDouble(""));
+        assertThrows(MissingArgumentException.class, () -> ArgumentParser.toDouble("   "));
         assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toDouble("abc"));
+        assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toDouble("12.34.56"));
     }
 }

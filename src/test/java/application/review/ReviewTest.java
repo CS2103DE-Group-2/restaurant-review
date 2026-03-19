@@ -84,4 +84,22 @@ public class ReviewTest {
         assertTrue(result.contains("Tag1"));
         assertTrue(result.contains("Overall: 4.0"));
     }
+
+    @Test
+    public void constructor_nullRating_throwsException() {
+        assertThrows(InvalidArgumentException.class, () -> new Review("Review", null, tags));
+        assertThrows(IllegalArgumentException.class, () -> new Review("Review", null));
+    }
+
+    @Test
+    public void addTag_nullTag_throwsException() throws InvalidArgumentException {
+        Review review = new Review("Review", rating);
+        assertThrows(IllegalArgumentException.class, () -> review.addTag(null));
+    }
+
+    @Test
+    public void removeTag_nullTag_throwsException() throws InvalidArgumentException {
+        Review review = new Review("Review", rating);
+        assertThrows(IllegalArgumentException.class, () -> review.removeTag(null));
+    }
 }

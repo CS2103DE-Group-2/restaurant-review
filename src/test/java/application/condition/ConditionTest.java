@@ -33,6 +33,7 @@ public class ConditionTest {
         assertTrue(cond.isSatisfiedBy(review));
         cond = new GreaterThanCondition(Criterion.OVERALL_SCORE, 3.5);
         assertFalse(cond.isSatisfiedBy(review));
+        assertEquals("overall scores > 3.5", cond.toString());
     }
 
     @Test
@@ -41,6 +42,7 @@ public class ConditionTest {
         assertTrue(cond.isSatisfiedBy(review));
         cond = new GreaterThanOrEqualsToCondition(Criterion.SERVICE_SCORE, 2.1);
         assertFalse(cond.isSatisfiedBy(review));
+        assertEquals("service scores >= 2.1", cond.toString());
     }
 
     @Test
@@ -49,6 +51,7 @@ public class ConditionTest {
         assertTrue(cond.isSatisfiedBy(review));
         cond = new LessThanCondition(Criterion.CLEANLINESS_SCORE, 3.0);
         assertFalse(cond.isSatisfiedBy(review));
+        assertEquals("clean scores < 3.0", cond.toString());
     }
 
     @Test
@@ -57,6 +60,7 @@ public class ConditionTest {
         assertTrue(cond.isSatisfiedBy(review));
         cond = new LessThanOrEqualsToCondition(Criterion.TAG_COUNT, 0.0);
         assertFalse(cond.isSatisfiedBy(review));
+        assertEquals("tag count <= 0.0", cond.toString());
     }
 
     @Test
@@ -65,6 +69,7 @@ public class ConditionTest {
         assertTrue(cond.isSatisfiedBy(review));
         cond = new NotEqualsToCondition(Criterion.FOOD_SCORE, 4.0);
         assertFalse(cond.isSatisfiedBy(review));
+        assertEquals("food scores != 4.0", cond.toString());
     }
 
     @Test
@@ -78,7 +83,25 @@ public class ConditionTest {
     @Test
     public void conditionType_getConditionType() {
         assertEquals(ConditionType.EQUALS, ConditionType.getConditionType("=="));
+        assertEquals("==", ConditionType.EQUALS.toString());
+        assertEquals(ConditionType.GREATER_THAN, ConditionType.getConditionType(">"));
+        assertEquals(">", ConditionType.GREATER_THAN.toString());
+        assertEquals(ConditionType.GREATER_THAN_OR_EQUALS, ConditionType.getConditionType(">="));
+        assertEquals(">=", ConditionType.GREATER_THAN_OR_EQUALS.toString());
+        assertEquals(ConditionType.LESS_THAN, ConditionType.getConditionType("<"));
+        assertEquals("<", ConditionType.LESS_THAN.toString());
+        assertEquals(ConditionType.LESS_THAN_OR_EQUALS, ConditionType.getConditionType("<="));
+        assertEquals("<=", ConditionType.LESS_THAN_OR_EQUALS.toString());
+        assertEquals(ConditionType.NOT_EQUALS, ConditionType.getConditionType("!="));
+        assertEquals("!=", ConditionType.NOT_EQUALS.toString());
         assertEquals(ConditionType.UNKNOWN, ConditionType.getConditionType("??"));
+        assertEquals("", ConditionType.UNKNOWN.toString());
         assertEquals(ConditionType.UNKNOWN, ConditionType.getConditionType(null));
+    }
+
+    @Test
+    public void isSatisfiedBy_nullReview_throwsException() {
+        Condition cond = new EqualsToCondition(Criterion.FOOD_SCORE, 4.0);
+        assertThrows(NullPointerException.class, () -> cond.isSatisfiedBy(null));
     }
 }

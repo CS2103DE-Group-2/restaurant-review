@@ -51,6 +51,14 @@ public class ReviewListTest {
     }
 
     @Test
+    public void markStatus_invalidIndex_throwsException() {
+        assertThrows(InvalidArgumentException.class, () -> reviewList.markResolved(0));
+        assertThrows(InvalidArgumentException.class, () -> reviewList.markResolved(3));
+        assertThrows(InvalidArgumentException.class, () -> reviewList.markOutstanding(0));
+        assertThrows(InvalidArgumentException.class, () -> reviewList.markOutstanding(3));
+    }
+
+    @Test
     public void filter_byTags_success() throws InvalidArgumentException {
         ReviewList filtered = reviewList.filter(Tag.toTags("Tag1"), new HashSet<>(), new HashSet<>(), null);
         assertEquals(1, filtered.size());
@@ -75,6 +83,23 @@ public class ReviewListTest {
     @Test
     public void sort_invalidOrder_throwsException() {
         assertThrows(InvalidArgumentException.class, () -> reviewList.sort(Criterion.FOOD_SCORE, SortOrder.UNKNOWN, reviewList));
+    }
+
+    @Test
+    public void criterion_toString() {
+        assertEquals("overall scores", Criterion.OVERALL_SCORE.toString());
+        assertEquals("food scores", Criterion.FOOD_SCORE.toString());
+        assertEquals("clean scores", Criterion.CLEANLINESS_SCORE.toString());
+        assertEquals("service scores", Criterion.SERVICE_SCORE.toString());
+        assertEquals("tag count", Criterion.TAG_COUNT.toString());
+        assertEquals("unknown", Criterion.UNKNOWN.toString());
+    }
+
+    @Test
+    public void sortOrder_toString() {
+        assertEquals("ascending", SortOrder.ASCENDING.toString());
+        assertEquals("descending", SortOrder.DESCENDING.toString());
+        assertEquals("unknown", SortOrder.UNKNOWN.toString());
     }
 
     @Test

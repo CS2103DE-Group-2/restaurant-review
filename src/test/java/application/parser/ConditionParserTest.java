@@ -39,5 +39,8 @@ public class ConditionParserTest {
         assertThrows(InvalidArgumentException.class, () -> ConditionParser.getConditions("food == 4.0 5.0"));
         assertThrows(InvalidArgumentException.class, () -> ConditionParser.getConditions("unknown == 4.0"));
         assertThrows(InvalidArgumentException.class, () -> ConditionParser.getConditions("food ?? 4.0"));
+        assertThrows(InvalidArgumentException.class, () -> ConditionParser.getConditions("food >"));
+        assertThrows(InvalidArgumentException.class, () -> ConditionParser.getConditions("> 3"));
+        assertThrows(InvalidArgumentException.class, () -> ConditionParser.getConditions("food > 3 > 2"));
     }
 }
