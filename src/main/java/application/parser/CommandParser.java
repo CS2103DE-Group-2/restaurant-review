@@ -44,30 +44,30 @@ public class CommandParser {
             command = new ExitCommand();
             break;
         case ADD_REVIEW:
-            arguments = parseArguments(AddReviewCommand.DELIMITERS, splitInput[1]);
+            arguments = splitIntoArguments(AddReviewCommand.DELIMITERS, splitInput[1]);
             command = new AddReviewCommand(arguments);
             break;
         case ADD_TAG:
-            arguments = parseArguments(AddTagsCommand.DELIMITERS, splitInput[1]);
+            arguments = splitIntoArguments(AddTagsCommand.DELIMITERS, splitInput[1]);
             command = new AddTagsCommand(arguments);
             break;
         case DELETE_TAG:
-            arguments = parseArguments(DeleteTagsCommand.DELIMITERS, splitInput[1]);
+            arguments = splitIntoArguments(DeleteTagsCommand.DELIMITERS, splitInput[1]);
             command = new DeleteTagsCommand(arguments);
             break;
         case DELETE:
-            arguments = parseArguments(DeleteReviewCommand.DELIMITERS, splitInput[1]);
+            arguments = splitIntoArguments(DeleteReviewCommand.DELIMITERS, splitInput[1]);
             command = new DeleteReviewCommand(arguments);
             break;
         case FILTER:
-            arguments = parseArguments(FilterReviewsCommand.DELIMITERS, splitInput[1]);
+            arguments = splitIntoArguments(FilterReviewsCommand.DELIMITERS, splitInput[1]);
             command = new FilterReviewsCommand(arguments);
             break;
         case LIST:
             command = new ListReviewsCommand();
             break;
         case SORT:
-            arguments = parseArguments(SortReviewsCommand.DELIMITERS, splitInput[1]);
+            arguments = splitIntoArguments(SortReviewsCommand.DELIMITERS, splitInput[1]);
             command = new SortReviewsCommand(arguments);
             break;
         case UNKNOWN:
@@ -90,7 +90,7 @@ public class CommandParser {
      * @param userInput the user input string without the command type
      * @return a map containing delimiter-argument pairs
      */
-    private static Map<String, String> parseArguments(Set<String> delimiters, String userInput) {
+    private static Map<String, String> splitIntoArguments(Set<String> delimiters, String userInput) {
         String[] argumentComponents = userInput.split(" ");
 
         Map<String, String> argumentsMap = new HashMap<>();
