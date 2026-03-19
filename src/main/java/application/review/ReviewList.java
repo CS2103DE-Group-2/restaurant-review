@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import application.condition.Condition;
 import application.exception.InvalidArgumentException;
 
 /**
@@ -118,29 +119,22 @@ public class ReviewList {
      * A review must match ALL criteria to be included in the filtered list.
      * 1. If tagsToInclude is not empty, the review must contain ALL tags in tagsToInclude.
      * 2. If tagsToExclude is not empty, the review must contain NONE of the tags in tagsToExclude.
-     * 3. If isResolved is not null, the review must match the resolved status.
-     * 4. If minimumScore is not 0.0, the review must have a score greater than or equal to minimumScore.
-     * 5. If maximumScore is not 5.0, the review must have a score less than or equal to maximumScore.
+     * 3. If filterConditions is not empty, the review must satisfy ALL conditions.
+     * 4. If isResolved is not null, the review must match the resolved status.
      * </p>
      *
      * @param tagsToInclude 1 or more tags to include in the filter
      * @param tagsToExclude 1 or more tags to exclude from the filter
-     * @param filterCriteria 1 or more OperationCriterion to filter by
+     * @param filterConditions 1 or more Criterion to filter by
      * @param isResolved whether to filter by resolved status
-     * @param minimumScore minimum score to filter by
-     * @param maximumScore maximum score to filter by
      * @return a filtered list of reviews that meet the specified criteria
      */
     public ReviewList filter(
             Set<Tag> tagsToInclude,
             Set<Tag> tagsToExclude,
-            Set<OperationCriterion> filterCriteria,
-            Boolean isResolved,
-            double minimumScore,
-            double maximumScore
+            Set<Condition> filterConditions,
+            Boolean isResolved
     ) {
-        Set<Function<Review, Double>> filterCriteriaFunctions = getOperationCriteriaFunctions(filterCriteria);
-
         //runs the list through all the filters available, default or not
         //default values should not affect results if not specified
         List<Review> filteredReviews = reviews.stream()
@@ -150,14 +144,12 @@ public class ReviewList {
                 .filter(review -> review.containsNoMatchingTags(tagsToExclude))
                 //check if we should check by resolved status, if so, then check if the review matches resolved status
                 .filter(review -> isResolved == null || review.isResolved() == isResolved)
-                //for each HOF, apply to the review and ensure that all reviews are within range of min and max score
+                //for each HOF, apply to the review and ensure that all reviews satisfy all conditions
                 .filter(review ->
-                                filterCriteriaFunctions
-                                        .stream()
-                                        .allMatch(filterCriterionFunction ->
-                                                filterCriterionFunction.apply(review) > minimumScore &&
-                                                filterCriterionFunction.apply(review) < maximumScore
-                                        )
+                        filterConditions.stream()
+                                .allMatch(filterCriterionFunction ->
+                                        filterCriterionFunction.isSatisfiedBy(review)
+                                )
                 )
                 .toList();
 
@@ -165,51 +157,24 @@ public class ReviewList {
     }
 
     /**
-     * Returns a set of functions that extract the specified operation criteria from a review.
-     *
-     * <p>
-     * UNKNOWN OperationCriterion will be discarded.
-     * </p>
-     *
-     * @param operationCriteria the set of operation criteria to extract
-     * @return a set of functions that extract the specified operation criteria from a review
-     */
-    private Set<Function<Review, Double>> getOperationCriteriaFunctions(Set<OperationCriterion> operationCriteria) {
-        return operationCriteria
-                .stream()
-                .map(operationCriterion -> {
-                            try {
-                                return getOperationCriterionFunction(operationCriterion);
-                            } catch (InvalidArgumentException ignored) {
-                                return null; //set UNKNOWN criterion to null
-                            }
-                        }
-                )
-                .filter(Objects::nonNull) //discard the UNKNOWN criteria
-                .collect(Collectors.toSet());
-    }
-
-    /**
      * Sorts the given review list based on the given criterion and sort order.
      *
-     * @param sortCriterion the criterion to sort by
+     * @param sortCriterion the criterion function to sort by
      * @param sortOrder the sort order (ascending or descending)
      * @param reviews the list of reviews to sort
      * @return a new sorted list of reviews
      * @throws InvalidArgumentException if the sort order is invalid
      */
     public ReviewList sort(
-            OperationCriterion sortCriterion,
+            Criterion sortCriterion,
             SortOrder sortOrder,
             ReviewList reviews
     ) throws InvalidArgumentException {
-        Function<Review, Double> sortCriterionFunction = getOperationCriterionFunction(sortCriterion);
-
         switch (sortOrder) {
         case ASCENDING:
-            return reviews.sortByAscending(sortCriterionFunction);
+            return reviews.sortByAscending(sortCriterion);
         case DESCENDING:
-            return reviews.sortByDescending(sortCriterionFunction);
+            return reviews.sortByDescending(sortCriterion);
         case UNKNOWN:
         default:
             throw new InvalidArgumentException("Invalid sort order!");
@@ -219,12 +184,13 @@ public class ReviewList {
     /**
      * Returns a new list of reviews sorted by the specified criterion in descending order.
      *
-     * @param sortCriterionFunction the criterion to sort by
+     * @param sortCriterion the criterion to sort by
      * @return a new list of reviews sorted by the specified criterion in descending order.
      */
-    private ReviewList sortByDescending(Function<Review, Double> sortCriterionFunction) {
+    private ReviewList sortByDescending(Criterion sortCriterion) {
         List<Review> sortedList = reviews.stream()
-                .sorted(Comparator.comparing(sortCriterionFunction).reversed())
+                .sorted(Comparator.comparing(sortCriterion.getFunction())
+                        .reversed())
                 .toList();
         return new ReviewList(sortedList);
     }
@@ -232,49 +198,14 @@ public class ReviewList {
     /**
      * Returns a new list of reviews sorted by the specified criterion in ascending order.
      *
-     * @param sortCriterionFunction the criterion to sort by
+     * @param sortCriterion the criterion to sort by
      * @return a new list of reviews sorted by the specified criterion in ascending order.
      */
-    private ReviewList sortByAscending(Function<Review, Double> sortCriterionFunction) {
+    private ReviewList sortByAscending(Criterion sortCriterion) {
         List<Review> sortedList = reviews.stream()
-                .sorted(Comparator.comparing(sortCriterionFunction))
+                .sorted(Comparator.comparing(sortCriterion.getFunction()))
                 .toList();
         return new ReviewList(sortedList);
-    }
-
-    /**
-     * Returns a function that extracts the sort criterion value from a review.
-     *
-     * @param operationCriterion the operation criterion
-     * @return a function that extracts the sort criterion value from a review
-     */
-    private Function<Review, Double> getOperationCriterionFunction(
-            OperationCriterion operationCriterion
-    ) throws InvalidArgumentException {
-        Function<Review, Double> sortCriterionFunction;
-
-        switch (operationCriterion) {
-        case OVERALL_SCORE:
-            sortCriterionFunction = review -> review.getRating().getOverallScore();
-            break;
-        case FOOD_SCORE:
-            sortCriterionFunction = review -> review.getRating().getFoodScore();
-            break;
-        case SERVICE_SCORE:
-            sortCriterionFunction = review -> review.getRating().getServiceScore();
-            break;
-        case CLEANLINESS_SCORE:
-            sortCriterionFunction = review -> review.getRating().getCleanlinessScore();
-            break;
-        case TAG_COUNT:
-            sortCriterionFunction = review -> (double) review.getTags().size();
-            break;
-        case UNKNOWN:
-        default:
-            throw new InvalidArgumentException("Invalid criterion specified!");
-        }
-
-        return sortCriterionFunction;
     }
 
     /**
