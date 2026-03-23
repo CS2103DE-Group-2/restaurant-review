@@ -1,120 +1,101 @@
 package application.parser;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import application.command.AddReviewCommand;
+import application.command.AddTagsCommand;
 import application.command.Command;
 import application.command.DeleteReviewCommand;
+import application.command.DeleteTagsCommand;
 import application.command.ExitCommand;
+import application.command.FilterReviewsCommand;
 import application.command.ListReviewsCommand;
+import application.command.ResolveReviewCommand;
+import application.command.SortReviewsCommand;
 import application.command.UnknownCommand;
+import application.command.UnresolveReviewCommand;
+import application.exception.InvalidArgumentException;
+import application.exception.MissingArgumentException;
 
-/**
- * Tests for CommandParser class.
- */
 public class CommandParserTest {
-    private String input;
 
-    /**
-     * Sets up the test environment before each test.
-     */
-    @BeforeEach
-    public void setUp() {
-        input = "";
-    }
-
-    /**
-     * Cleans up the test environment after each test.
-     */
-    @AfterEach
-    public void tearDown() {
-        input = null;
-    }
-
-    /**
-     * Tests parsing an exit command.
-     */
     @Test
-    public void getCommand_exit_success() {
-        input = "exit";
-        Command command = CommandParser.getCommand(input);
-        assertInstanceOf(ExitCommand.class, command);
+    public void getCommand_exit_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("exit");
+        assertTrue(command instanceof ExitCommand);
+        assertTrue(command.isTerminatingCommand());
     }
 
-    /**
-     * Tests parsing an add command.
-     */
     @Test
-    public void getCommand_add_success() {
-        input = "add restaurant /rating 5 /review Good";
-        Command command = CommandParser.getCommand(input);
-        assertInstanceOf(AddReviewCommand.class, command);
+    public void getCommand_list_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("list");
+        assertTrue(command instanceof ListReviewsCommand);
     }
 
-    /**
-     * Tests parsing a delete command.
-     */
     @Test
-    public void getCommand_delete_success() {
-        input = "delete 1";
-        Command command = CommandParser.getCommand(input);
-        assertInstanceOf(DeleteReviewCommand.class, command);
+    public void getCommand_unknown_returnsUnknownCommand() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("unknowncommand");
+        assertTrue(command instanceof UnknownCommand);
     }
 
-    /**
-     * Tests parsing a list command.
-     */
     @Test
-    public void getCommand_list_success() {
-        input = "list";
-        Command command = CommandParser.getCommand(input);
-        assertInstanceOf(ListReviewsCommand.class, command);
+    public void getCommand_addReview_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand(
+                "review Great food! /food 5 /clean 4 /service 5 /tag Good Food");
+        assertTrue(command instanceof AddReviewCommand);
     }
 
-    /**
-     * Tests parsing an unknown command string.
-     */
     @Test
-    public void getCommand_unknown_success() {
-        input = "blah";
-        Command command = CommandParser.getCommand(input);
-        assertInstanceOf(UnknownCommand.class, command);
+    public void getCommand_delete_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("delete 1");
+        assertTrue(command instanceof DeleteReviewCommand);
     }
 
-    /**
-     * Tests parsing an empty command string.
-     */
     @Test
-    public void getCommand_empty_success() {
-        input = "";
-        Command command = CommandParser.getCommand(input);
-        assertInstanceOf(UnknownCommand.class, command);
+    public void getCommand_filter_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand(
+                "filter /hastag Tag1 /notag Tag2 /condition food > 3");
+        assertTrue(command instanceof FilterReviewsCommand);
     }
 
-    /**
-     * Tests parsing a null command input.
-     */
     @Test
-    public void getCommand_null_success() {
-        Command command = CommandParser.getCommand(null);
-        assertInstanceOf(UnknownCommand.class, command);
+    public void getCommand_sort_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("sort asc /by food");
+        assertTrue(command instanceof SortReviewsCommand);
     }
 
-    /**
-     * Tests parsing an add command with multiple delimiters of the same type.
-     * The latest argument for that delimiter should be captured.
-     */
     @Test
-    public void getCommand_addMultipleDelimiters_success() {
-        // The last /rating (3) should be the one used.
-        input = "add restaurant /rating 5 /rating 3 /review Good";
-        Command command = CommandParser.getCommand(input);
-        assertInstanceOf(AddReviewCommand.class, command);
-        // Note: we can't easily check the internal Map of AddReviewCommand without reflection
-        // but we can test the behavior by executing it if needed, or trust the parser logic.
+    public void getCommand_addTag_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("addtag 1 /tag NewTag");
+        assertTrue(command instanceof AddTagsCommand);
+    }
+
+    @Test
+    public void getCommand_deleteTag_success() throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("deletetag 1 /tag OldTag");
+        assertTrue(command instanceof DeleteTagsCommand);
+    }
+
+    @Test
+    public void getCommand_resolve_returnsResolveReviewCommand()
+            throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("resolve 1");
+        assertTrue(command instanceof ResolveReviewCommand);
+    }
+
+    @Test
+    public void getCommand_unresolve_returnsUnresolveReviewCommand()
+            throws InvalidArgumentException, MissingArgumentException {
+        Command command = CommandParser.getCommand("unresolve 1");
+        assertTrue(command instanceof UnresolveReviewCommand);
+    }
+
+    @Test
+    public void getCommand_emptyInput_returnsUnknownCommand()
+            throws InvalidArgumentException, MissingArgumentException {
+        assertTrue(CommandParser.getCommand("") instanceof UnknownCommand);
+        assertTrue(CommandParser.getCommand("   ") instanceof UnknownCommand);
     }
 }

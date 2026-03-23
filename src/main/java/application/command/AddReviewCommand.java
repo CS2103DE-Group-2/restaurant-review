@@ -5,56 +5,66 @@ import java.util.Set;
 
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
-import application.parser.Utility;
+import application.parser.ArgumentParser;
 import application.review.Rating;
 import application.review.Review;
 import application.review.ReviewList;
+import application.review.Tag;
 import application.storage.Storage;
 
 /**
  * Class representing a command to add a review.
  */
 public class AddReviewCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of("/default", "/rating", "/review");
-    private final Map<String, String> commandArgs;
+    public static final Set<String> DELIMITERS = Set.of("/default", "/food", "/clean", "/service", "/tag");
+    private final String reviewBody;
+    private final Double foodScore;
+    private final Double cleanlinessScore;
+    private final Double serviceScore;
+    private final Set<Tag> tagsToAdd;
 
     /**
      * Constructor for AddReviewCommand class.
      *
      * @param commandArgs the arguments of the command
+     * @throws InvalidArgumentException if any argument is in the wrong format
+     * @throws MissingArgumentException if any argument is missing
      */
-    public AddReviewCommand(Map<String, String> commandArgs) {
-        this.commandArgs = commandArgs;
+    public AddReviewCommand(Map<String, String> commandArgs)
+            throws InvalidArgumentException, MissingArgumentException {
+        String reviewBody = commandArgs.get("/default");
+        String foodScoreAsString = commandArgs.get("/food");
+        String cleanlinessScoreAsString = commandArgs.get("/clean");
+        String serviceScoreAsString = commandArgs.get("/service");
+        String tagsToAddAsString = commandArgs.get("/tag");
+
+        this.reviewBody = reviewBody;
+        this.foodScore = ArgumentParser.toDouble(foodScoreAsString);
+        this.cleanlinessScore = ArgumentParser.toDouble(cleanlinessScoreAsString);
+        this.serviceScore = ArgumentParser.toDouble(serviceScoreAsString);
+        this.tagsToAdd = Tag.toTags(tagsToAddAsString);
     }
 
     /**
      * Executes the command to add a review to the list.
      *
-     * @param reviewList the list of reviews
-     * @param storage    the storage object
+     * @param reviews the list of reviews
+     * @param storage the storage object
      * @return a string representation of the command result
-     * @throws MissingArgumentException if any argument is missing
      * @throws InvalidArgumentException if any argument is in the wrong format
      */
     @Override
-    public String execute(ReviewList reviewList, Storage storage)
-            throws MissingArgumentException, InvalidArgumentException {
-        String user = commandArgs.get("/default");
-        String reviewBody = commandArgs.get("/review");
-        String ratingAsString = commandArgs.get("/rating");
+    public String execute(
+            ReviewList reviews,
+            Storage storage
+    ) throws InvalidArgumentException {
+        //create a new Rating object with scores
+        Rating rating = new Rating(foodScore, cleanlinessScore, serviceScore);
 
-        if (Utility.isInvalidString(user)) {
-            throw new MissingArgumentException("No user provided!");
-        }
+        //create a new Review object
+        Review review = new Review(reviewBody, rating, tagsToAdd);
 
-        if (Utility.isInvalidString(reviewBody)) {
-            throw new MissingArgumentException("No review provided!");
-        }
-
-        Rating rating = Utility.toRating(ratingAsString);
-
-        Review review = new Review(user, reviewBody, rating);
-        reviewList.addReview(review);
+        reviews.addReview(review);
 
         return String.format("Added review to list:\n%s", review);
     }

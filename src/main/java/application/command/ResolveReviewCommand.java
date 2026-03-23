@@ -11,27 +11,27 @@ import application.review.ReviewList;
 import application.storage.Storage;
 
 /**
- * Class representing a command to delete a review.
+ * Class representing a command to resolve a review.
  */
-public class DeleteReviewCommand extends Command {
+public class ResolveReviewCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default");
     private final int index;
 
     /**
-     * Constructor for DeleteReviewCommand class.
+     * Constructor for ResolveReviewCommand class.
      *
      * @param commandArgs the arguments of the command
      * @throws InvalidArgumentException if the index is not a number
      * @throws MissingArgumentException if the index is missing
      */
-    public DeleteReviewCommand(Map<String, String> commandArgs)
+    public ResolveReviewCommand(Map<String, String> commandArgs)
             throws InvalidArgumentException, MissingArgumentException {
         String indexAsString = commandArgs.get("/default");
         this.index = ArgumentParser.toInt(indexAsString);
     }
 
     /**
-     * Executes the command to delete a review from the list.
+     * Executes the command to resolve a review in the list.
      *
      * @param reviews the list of reviews
      * @param storage the storage object
@@ -43,8 +43,8 @@ public class DeleteReviewCommand extends Command {
             ReviewList reviews,
             Storage storage
     ) throws InvalidArgumentException {
-        Review review = reviews.deleteReview(index);
+        Review review = reviews.markResolved(index);
 
-        return String.format("%s\ndeleted!", review);
+        return String.format("%s\nmarked as resolved!", review);
     }
 }

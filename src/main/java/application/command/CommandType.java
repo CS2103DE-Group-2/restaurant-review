@@ -1,15 +1,21 @@
 package application.command;
 
-import application.parser.Utility;
+import application.parser.ArgumentParser;
 
 /**
  * Enum representing the different types of commands.
  */
 public enum CommandType {
     EXIT("exit"),
-    ADD("add"),
+    ADD_REVIEW("review"),
+    ADD_TAG("addtag"),
+    DELETE_TAG("deletetag"),
     DELETE("delete"),
+    FILTER("filter"),
     LIST("list"),
+    RESOLVE("resolve"),
+    UNRESOLVE("unresolve"),
+    SORT("sort"),
     UNKNOWN("unknown");
 
     private final String commandString;
@@ -30,12 +36,12 @@ public enum CommandType {
      * @return the command type of the input
      */
     public static CommandType getCommandType(String input) {
-        if (Utility.isInvalidString(input)) {
+        if (!ArgumentParser.isValidString(input)) {
             return UNKNOWN;
         }
 
         for (CommandType type : CommandType.values()) {
-            if (type.commandString.startsWith(input)) {
+            if (type.commandString.equals(input)) {
                 return type;
             }
         }

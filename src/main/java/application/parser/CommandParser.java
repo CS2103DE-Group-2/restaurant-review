@@ -5,12 +5,20 @@ import java.util.Map;
 import java.util.Set;
 
 import application.command.AddReviewCommand;
+import application.command.AddTagsCommand;
 import application.command.Command;
 import application.command.CommandType;
 import application.command.DeleteReviewCommand;
+import application.command.DeleteTagsCommand;
 import application.command.ExitCommand;
+import application.command.FilterReviewsCommand;
 import application.command.ListReviewsCommand;
+import application.command.ResolveReviewCommand;
+import application.command.SortReviewsCommand;
 import application.command.UnknownCommand;
+import application.command.UnresolveReviewCommand;
+import application.exception.InvalidArgumentException;
+import application.exception.MissingArgumentException;
 
 /**
  * CommandParser class for parsing user input into commands.
@@ -21,9 +29,12 @@ public class CommandParser {
      *
      * @param input the user input string
      * @return a command containing its respective arguments
+     * @throws MissingArgumentException if the command is missing an argument
+     * @throws InvalidArgumentException if the command has an invalid argument
      */
-    public static Command getCommand(String input) {
-        String[] splitInput = Utility.splitIntoPair(input, " ");
+    public static Command getCommand(String input)
+            throws MissingArgumentException, InvalidArgumentException {
+        String[] splitInput = ArgumentParser.splitIntoPair(input.trim(), " ");
 
         CommandType commandType = CommandType.getCommandType(splitInput[0].toLowerCase());
 
@@ -34,16 +45,40 @@ public class CommandParser {
         case EXIT:
             command = new ExitCommand();
             break;
-        case ADD:
-            arguments = parseArguments(AddReviewCommand.DELIMITERS, splitInput[1]);
+        case ADD_REVIEW:
+            arguments = splitIntoArguments(AddReviewCommand.DELIMITERS, splitInput[1]);
             command = new AddReviewCommand(arguments);
             break;
+        case ADD_TAG:
+            arguments = splitIntoArguments(AddTagsCommand.DELIMITERS, splitInput[1]);
+            command = new AddTagsCommand(arguments);
+            break;
+        case DELETE_TAG:
+            arguments = splitIntoArguments(DeleteTagsCommand.DELIMITERS, splitInput[1]);
+            command = new DeleteTagsCommand(arguments);
+            break;
         case DELETE:
-            arguments = parseArguments(DeleteReviewCommand.DELIMITERS, splitInput[1]);
+            arguments = splitIntoArguments(DeleteReviewCommand.DELIMITERS, splitInput[1]);
             command = new DeleteReviewCommand(arguments);
+            break;
+        case FILTER:
+            arguments = splitIntoArguments(FilterReviewsCommand.DELIMITERS, splitInput[1]);
+            command = new FilterReviewsCommand(arguments);
             break;
         case LIST:
             command = new ListReviewsCommand();
+            break;
+        case RESOLVE:
+            arguments = splitIntoArguments(ResolveReviewCommand.DELIMITERS, splitInput[1]);
+            command = new ResolveReviewCommand(arguments);
+            break;
+        case SORT:
+            arguments = splitIntoArguments(SortReviewsCommand.DELIMITERS, splitInput[1]);
+            command = new SortReviewsCommand(arguments);
+            break;
+        case UNRESOLVE:
+            arguments = splitIntoArguments(UnresolveReviewCommand.DELIMITERS, splitInput[1]);
+            command = new UnresolveReviewCommand(arguments);
             break;
         case UNKNOWN:
         default:
@@ -65,7 +100,7 @@ public class CommandParser {
      * @param userInput the user input string without the command type
      * @return a map containing delimiter-argument pairs
      */
-    private static Map<String, String> parseArguments(Set<String> delimiters, String userInput) {
+    private static Map<String, String> splitIntoArguments(Set<String> delimiters, String userInput) {
         String[] argumentComponents = userInput.split(" ");
 
         Map<String, String> argumentsMap = new HashMap<>();
@@ -75,7 +110,7 @@ public class CommandParser {
 
         for (String argument : argumentComponents) {
             if (delimiters.contains(argument)) {
-                argumentsMap.put(currentDelimiter, currentArgument.toString().strip().trim());
+                argumentsMap.put(currentDelimiter, currentArgument.toString().trim());
                 currentDelimiter = argument;
                 currentArgument = new StringBuilder();
             } else {
