@@ -48,6 +48,7 @@ public class StorageTest {
                     try {
                         Files.deleteIfExists(path);
                     } catch (IOException ignored) {
+                        throw new RuntimeException("Failed to delete temporary test file: " + path, ignored);
                     }
                 });
     }

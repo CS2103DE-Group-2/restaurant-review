@@ -48,6 +48,7 @@ public class CommandTest {
                     try {
                         Files.deleteIfExists(path);
                     } catch (IOException ignored) {
+                        throw new RuntimeException("Failed to delete temporary test file: " + path, ignored);
                     }
                 });
     }
