@@ -46,6 +46,11 @@ public class AddReviewCommand extends Command {
         this.tagsToAdd = Tag.toTags(tagsToAddAsString);
     }
 
+    @Override
+    public boolean requiresOwnerAuthentication() {
+        return false;
+    }
+
     /**
      * Executes the command to add a review to the list.
      *
