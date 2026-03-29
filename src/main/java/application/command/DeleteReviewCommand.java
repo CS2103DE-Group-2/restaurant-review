@@ -31,11 +31,6 @@ public class DeleteReviewCommand extends Command {
         this.index = ArgumentParser.toInt(indexAsString);
     }
 
-    @Override
-    public boolean requiresOwnerAuthentication() {
-        return true;
-    }
-
     /**
      * Executes the command to delete a review from the list.
      *

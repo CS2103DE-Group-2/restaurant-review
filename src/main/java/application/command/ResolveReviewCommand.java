@@ -31,11 +31,6 @@ public class ResolveReviewCommand extends Command {
         this.index = ArgumentParser.toInt(indexAsString);
     }
 
-    @Override
-    public boolean requiresOwnerAuthentication() {
-        return true;
-    }
-
     /**
      * Executes the command to resolve a review in the list.
      *

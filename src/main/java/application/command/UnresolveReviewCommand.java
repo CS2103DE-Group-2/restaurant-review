@@ -31,11 +31,6 @@ public class UnresolveReviewCommand extends Command {
         this.index = ArgumentParser.toInt(indexAsString);
     }
 
-    @Override
-    public boolean requiresOwnerAuthentication() {
-        return true;
-    }
-
     /**
      * Executes the command to unresolve a review in the list.
      *

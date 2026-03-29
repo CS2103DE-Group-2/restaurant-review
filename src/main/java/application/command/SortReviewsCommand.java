@@ -31,11 +31,6 @@ public class SortReviewsCommand extends Command {
         this.sortCriterion = Criterion.getCriterion(sortCriterionAsString);
     }
 
-    @Override
-    public boolean requiresOwnerAuthentication() {
-        return true;
-    }
-
     /**
      * Executes the command to sort reviews.
      *

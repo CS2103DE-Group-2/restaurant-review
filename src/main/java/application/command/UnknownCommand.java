@@ -7,6 +7,11 @@ import application.storage.Storage;
  * Class representing an unknown command.
  */
 public class UnknownCommand extends Command {
+    @Override
+    public boolean requiresOwnerAuthentication() {
+        return false;
+    }
+
     /**
      * Returns a message indicating that the command is unknown.
      *

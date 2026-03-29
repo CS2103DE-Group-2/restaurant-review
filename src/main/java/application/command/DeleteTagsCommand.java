@@ -40,12 +40,6 @@ public class DeleteTagsCommand extends Command {
         }
     }
 
-    @Override
-    public boolean requiresOwnerAuthentication() {
-        return true;
-    }
-
-
     /**
      * Executes the command to delete tags from a review.
      *

@@ -22,10 +22,13 @@ public abstract class Command {
     /**
      * Returns whether this command requires owner authentication.
      *
+     * By default, commands are owner-only and require owner authentication.
+     * Public commands should override this to return {@code false}.
+     *
      * @return true if owner authentication is required, false otherwise
      */
     public boolean requiresOwnerAuthentication() {
-        return false;
+        return true;
     }
 
     /**

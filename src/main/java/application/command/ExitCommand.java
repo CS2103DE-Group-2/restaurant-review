@@ -7,6 +7,11 @@ import application.storage.Storage;
  * Class representing a command to exit the program.
  */
 public class ExitCommand extends Command {
+    @Override
+    public boolean requiresOwnerAuthentication() {
+        return false;
+    }
+
     /**
      * Returns true, as this command should terminate the program.
      *
