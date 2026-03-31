@@ -80,7 +80,7 @@ public class MealMeterTest {
     public void handleInput_loginInvalidFormat_returnsUsage() {
         CommandResult result = mealMeter.handleInput("login");
 
-        assertEquals("Invalid login format. Usage: login PASSWORD", result.output());
+        assertEquals("Please enter a valid password.", result.output());
         assertFalse(result.shouldTerminate());
     }
 
@@ -88,7 +88,7 @@ public class MealMeterTest {
     public void handleInput_loginWrongPassword_returnsFailure() {
         CommandResult result = mealMeter.handleInput("login wrong");
 
-        assertEquals("Invalid owner password.", result.output());
+        assertEquals("Incorrect password!", result.output());
         assertFalse(result.shouldTerminate());
     }
 
@@ -97,10 +97,10 @@ public class MealMeterTest {
         CommandResult firstResult = mealMeter.handleInput("LoGiN secret");
         CommandResult secondResult = mealMeter.handleInput("login secret");
 
-        assertEquals("Owner login successful.", firstResult.output());
+        assertEquals("Successfully logged in!", firstResult.output());
         assertFalse(firstResult.shouldTerminate());
 
-        assertEquals("Owner already logged in.", secondResult.output());
+        assertEquals("You are already logged in!", secondResult.output());
         assertFalse(secondResult.shouldTerminate());
     }
 

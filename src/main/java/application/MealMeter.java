@@ -21,12 +21,6 @@ import application.storage.StorageLoadResult;
  */
 public class MealMeter {
     private static final String DEFAULT_OWNER_PASSWORD = "password";
-    private static final String LOGIN_KEYWORD = "login";
-
-    private static final String LOGIN_SUCCESS_MESSAGE = "Owner login successful.";
-    private static final String LOGIN_INVALID_PASSWORD_MESSAGE = "Invalid owner password.";
-    private static final String LOGIN_ALREADY_AUTHENTICATED_MESSAGE = "Owner already logged in.";
-    private static final String LOGIN_INVALID_FORMAT_MESSAGE = "Invalid login format. Usage: login PASSWORD";
     private static final String ACCESS_DENIED_MESSAGE =
             "Access denied. Please log in as the owner to use this command.";
 
@@ -102,10 +96,6 @@ public class MealMeter {
      * @return the result containing output and termination status
      */
     public CommandResult handleInput(String userInput) {
-        if (isLoginInput(userInput)) {
-            return handleLogin(userInput);
-        }
-
         try {
             Command command = CommandParser.getCommand(userInput);
 
@@ -113,41 +103,12 @@ public class MealMeter {
                 return new CommandResult(ACCESS_DENIED_MESSAGE, false);
             }
 
-            String output = command.execute(reviewList, storage);
+            String output = command.execute(reviewList, storage, authManager);
             return new CommandResult(output, command.isTerminatingCommand());
         } catch (InvalidArgumentException | MissingArgumentException | IOException e) {
             return new CommandResult(e.getMessage(), false);
         } catch (Exception e) {
             return new CommandResult("An unexpected error occurred: " + e.getMessage(), false);
         }
-    }
-
-    private boolean isLoginInput(String userInput) {
-        if (userInput == null || userInput.isBlank()) {
-            return false;
-        }
-
-        String[] commandParts = userInput.trim().split("\\s+", 2);
-        return LOGIN_KEYWORD.equalsIgnoreCase(commandParts[0]);
-    }
-
-    private CommandResult handleLogin(String userInput) {
-        String[] commandParts = userInput.trim().split("\\s+", 2);
-
-        if (commandParts.length != 2 || commandParts[1].isBlank() || commandParts[1].contains(" ")) {
-            return new CommandResult(LOGIN_INVALID_FORMAT_MESSAGE, false);
-        }
-
-        if (authManager.isOwnerAuthenticated()) {
-            return new CommandResult(LOGIN_ALREADY_AUTHENTICATED_MESSAGE, false);
-        }
-
-        String password = commandParts[1].trim();
-
-        if (authManager.authenticateOwner(password)) {
-            return new CommandResult(LOGIN_SUCCESS_MESSAGE, false);
-        }
-
-        return new CommandResult(LOGIN_INVALID_PASSWORD_MESSAGE, false);
     }
 }

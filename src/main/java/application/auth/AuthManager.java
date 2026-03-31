@@ -54,4 +54,11 @@ public class AuthManager {
         return isOwnerAuthenticated;
     }
 
+    /**
+     * Logs the owner out of the current session.
+     */
+    public void logout() {
+        isOwnerAuthenticated = false;
+    }
+
 }
