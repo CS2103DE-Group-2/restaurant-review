@@ -60,4 +60,5 @@ public class AuthManager {
     public void logout() {
         isOwnerAuthenticated = false;
     }
+
 }

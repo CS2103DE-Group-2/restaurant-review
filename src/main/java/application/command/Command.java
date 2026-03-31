@@ -21,6 +21,18 @@ public abstract class Command {
     }
 
     /**
+     * Returns whether this command requires owner authentication.
+     *
+     * By default, commands are owner-only and require owner authentication.
+     * Public commands should override this to return {@code false}.
+     *
+     * @return true if owner authentication is required, false otherwise
+     */
+    public boolean requiresOwnerAuthentication() {
+        return true;
+    }
+
+    /**
      * Abstract generic execute method for all commands to complete their specified actions.
      *
      * @param reviews the list of reviews

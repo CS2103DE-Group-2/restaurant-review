@@ -20,17 +20,36 @@ import application.storage.StorageLoadResult;
  * and the command-processing logic.</p>
  */
 public class MealMeter {
+    private static final String DEFAULT_OWNER_PASSWORD = "password";
+    private static final String ACCESS_DENIED_MESSAGE =
+            "Access denied. Please log in as the owner to use this command.";
+
     private final Storage storage;
+    private final AuthManager authManager;
     private final ReviewList reviewList;
     private final boolean hasStorageLoadFailure;
     private final List<String> startupStorageWarnings;
-    private final AuthManager authManager = new AuthManager("hello");
 
     /**
      * Constructs a MealMeter application and loads stored reviews.
      */
     public MealMeter() {
-        this.storage = new Storage();
+        this(DEFAULT_OWNER_PASSWORD);
+    }
+
+    /**
+     * Constructs a MealMeter application with a custom owner password
+     * and loads stored reviews.
+     *
+     * @param ownerPassword the owner password for session login
+     */
+    public MealMeter(String ownerPassword) {
+        this(new Storage(), new AuthManager(ownerPassword));
+    }
+
+    MealMeter(Storage storage, AuthManager authManager) {
+        this.storage = storage;
+        this.authManager = authManager;
 
         ReviewList loadedReviews;
         boolean loadFailure;
@@ -79,6 +98,11 @@ public class MealMeter {
     public CommandResult handleInput(String userInput) {
         try {
             Command command = CommandParser.getCommand(userInput);
+
+            if (command.requiresOwnerAuthentication() && !authManager.isOwnerAuthenticated()) {
+                return new CommandResult(ACCESS_DENIED_MESSAGE, false);
+            }
+
             String output = command.execute(reviewList, storage, authManager);
             return new CommandResult(output, command.isTerminatingCommand());
         } catch (InvalidArgumentException | MissingArgumentException | IOException e) {

@@ -1,18 +1,18 @@
 package application.command;
 
+import java.util.Map;
+import java.util.Set;
+
 import application.auth.AuthManager;
 import application.exception.MissingArgumentException;
 import application.parser.ArgumentParser;
 import application.review.ReviewList;
 import application.storage.Storage;
 
-import java.util.Map;
-import java.util.Set;
-
 /**
  * Represents a login command.
  */
-public class LoginCommand extends Command{
+public class LoginCommand extends Command {
     public static final Set<String> DELIMITERS = Set.of("/default");
     private final String password;
 
@@ -27,6 +27,11 @@ public class LoginCommand extends Command{
             throw new MissingArgumentException("Please enter a valid password.");
         }
         this.password = rawPassword.trim();
+    }
+
+    @Override
+    public boolean requiresOwnerAuthentication() {
+        return false;
     }
 
     /**

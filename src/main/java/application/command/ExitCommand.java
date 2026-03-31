@@ -8,11 +8,6 @@ import application.storage.Storage;
  * Class representing a command to exit the program.
  */
 public class ExitCommand extends Command {
-    /**
-     * Returns true, as this command should terminate the program.
-     *
-     * @return true
-     */
     @Override
     public boolean isTerminatingCommand() {
         return true;

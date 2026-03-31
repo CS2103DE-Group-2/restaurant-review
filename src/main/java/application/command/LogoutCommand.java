@@ -7,7 +7,12 @@ import application.storage.Storage;
 /**
  * Class representing a command to log out.
  */
-public class LogoutCommand extends Command{
+public class LogoutCommand extends Command {
+    @Override
+    public boolean requiresOwnerAuthentication() {
+        return false;
+    }
+
     /**
      * Executes the logout command.
      * @param reviews the list of reviews

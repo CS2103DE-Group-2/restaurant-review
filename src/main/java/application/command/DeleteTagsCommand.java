@@ -41,7 +41,6 @@ public class DeleteTagsCommand extends Command {
         }
     }
 
-
     /**
      * Executes the command to delete tags from a review.
      *

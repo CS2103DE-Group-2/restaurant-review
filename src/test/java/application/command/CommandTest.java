@@ -17,6 +17,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import application.auth.AuthManager;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
 import application.review.Review;
@@ -25,14 +26,18 @@ import application.review.Tag;
 import application.storage.Storage;
 
 public class CommandTest {
+    private static final String OWNER_PASSWORD = "secret";
+
     private ReviewList reviewList;
     private Storage storage;
+    private AuthManager authManager;
     private Path tempDirectory;
 
     @BeforeEach
     public void setUp() {
         reviewList = new ReviewList();
         storage = new Storage();
+        authManager = new AuthManager(OWNER_PASSWORD);
         tempDirectory = null;
     }
 
@@ -64,7 +69,7 @@ public class CommandTest {
         args.put("/tag", "Tag1");
 
         AddReviewCommand cmd = new AddReviewCommand(args);
-        String output = cmd.execute(reviewList, storage);
+        String output = cmd.execute(reviewList, storage, authManager);
 
         assertEquals(1, reviewList.size());
         assertTrue(output.contains("Added review"));
@@ -79,7 +84,7 @@ public class CommandTest {
         Map<String, String> args = new HashMap<>();
         args.put("/default", "1");
         DeleteReviewCommand cmd = new DeleteReviewCommand(args);
-        String output = cmd.execute(reviewList, storage);
+        String output = cmd.execute(reviewList, storage, authManager);
 
         assertEquals(0, reviewList.size());
         assertTrue(output.contains("deleted"));
@@ -94,7 +99,7 @@ public class CommandTest {
         args.put("/default", "1");
         args.put("/tag", "NewTag");
         AddTagsCommand cmd = new AddTagsCommand(args);
-        cmd.execute(reviewList, storage);
+        cmd.execute(reviewList, storage, authManager);
 
         Review review = reviewList.getReview(1);
         assertTrue(review.getTags().contains(new Tag("NewTag")));
@@ -103,7 +108,7 @@ public class CommandTest {
     @Test
     public void listReviewsCommand_execute_success() {
         ListReviewsCommand cmd = new ListReviewsCommand();
-        String output = cmd.execute(reviewList, storage);
+        String output = cmd.execute(reviewList, storage, authManager);
         assertTrue(output.contains("Review list is empty."));
     }
 
@@ -121,7 +126,7 @@ public class CommandTest {
         Map<String, String> args = new HashMap<>();
         args.put("/hastag", "Tag1");
         FilterReviewsCommand cmd = new FilterReviewsCommand(args);
-        String output = cmd.execute(reviewList, storage);
+        String output = cmd.execute(reviewList, storage, authManager);
         assertTrue(output.contains("Filtered reviews:"));
         assertTrue(output.contains("Tag1"));
     }
@@ -135,7 +140,7 @@ public class CommandTest {
         args.put("/default", "asc");
         args.put("/by", "food");
         SortReviewsCommand cmd = new SortReviewsCommand(args);
-        String output = cmd.execute(reviewList, storage);
+        String output = cmd.execute(reviewList, storage, authManager);
         assertTrue(output.contains("Sorted by food scores in ascending order"));
     }
 
@@ -183,7 +188,7 @@ public class CommandTest {
         args.put("/default", "2"); // out of bounds
         DeleteReviewCommand cmd = new DeleteReviewCommand(args);
 
-        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage));
+        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
@@ -205,7 +210,7 @@ public class CommandTest {
         args.put("/by", "food");
         SortReviewsCommand cmd = new SortReviewsCommand(args);
 
-        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage));
+        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
@@ -217,7 +222,7 @@ public class CommandTest {
         args.put("/default", "1");
         args.put("/tag", "Tag1");
         DeleteTagsCommand cmd = new DeleteTagsCommand(args);
-        cmd.execute(reviewList, storage);
+        cmd.execute(reviewList, storage, authManager);
 
         Review review = reviewList.getReview(1);
         assertFalse(review.getTags().contains(new Tag("Tag1")));
@@ -239,19 +244,19 @@ public class CommandTest {
         args.put("/tag", "Tag1");
 
         DeleteTagsCommand cmd = assertDoesNotThrow(() -> new DeleteTagsCommand(args));
-        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage));
+        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
     public void unknownCommand_execute_success() throws InvalidArgumentException, IOException {
         Command cmd = new UnknownCommand();
-        assertEquals("I'm sorry, I don't understand that command.", cmd.execute(reviewList, storage));
+        assertEquals("I'm sorry, I don't understand that command.", cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
     public void exitCommand_execute_success() throws InvalidArgumentException, IOException {
         Command cmd = new ExitCommand();
-        assertEquals("Goodbye!", cmd.execute(reviewList, storage));
+        assertEquals("Goodbye!", cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
@@ -262,7 +267,7 @@ public class CommandTest {
         Map<String, String> args = new HashMap<>();
         args.put("/default", "1");
         ResolveReviewCommand cmd = new ResolveReviewCommand(args);
-        String output = cmd.execute(reviewList, storage);
+        String output = cmd.execute(reviewList, storage, authManager);
 
         assertTrue(output.contains("marked as resolved!"));
         assertTrue(reviewList.getReview(1).isResolved());
@@ -292,7 +297,7 @@ public class CommandTest {
         args.put("/default", "2"); // out of bounds
         ResolveReviewCommand cmd = new ResolveReviewCommand(args);
 
-        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage));
+        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
@@ -305,7 +310,7 @@ public class CommandTest {
         Map<String, String> args = new HashMap<>();
         args.put("/default", "1");
         UnresolveReviewCommand cmd = new UnresolveReviewCommand(args);
-        String output = cmd.execute(reviewList, storage);
+        String output = cmd.execute(reviewList, storage, authManager);
 
         assertTrue(output.contains("marked as outstanding!"));
         assertFalse(reviewList.getReview(1).isResolved());
@@ -335,7 +340,7 @@ public class CommandTest {
         args.put("/default", "2"); // out of bounds
         UnresolveReviewCommand cmd = new UnresolveReviewCommand(args);
 
-        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage));
+        assertThrows(InvalidArgumentException.class, () -> cmd.execute(reviewList, storage, authManager));
     }
 
     @Test
@@ -344,14 +349,14 @@ public class CommandTest {
         Storage fileStorage = createFileBackedStorage();
 
         AddReviewCommand addCommand = new AddReviewCommand(createReviewArgs("first", "tagA"));
-        addCommand.execute(reviewList, fileStorage);
+        addCommand.execute(reviewList, fileStorage, authManager);
 
         ReviewList loadedAfterAdd = fileStorage.loadReviews();
         assertEquals(1, loadedAfterAdd.size());
         assertEquals("first", loadedAfterAdd.getReview(1).getReviewBody());
 
         DeleteReviewCommand deleteCommand = new DeleteReviewCommand(Map.of("/default", "1"));
-        deleteCommand.execute(reviewList, fileStorage);
+        deleteCommand.execute(reviewList, fileStorage, authManager);
 
         ReviewList loadedAfterDelete = fileStorage.loadReviews();
         assertEquals(0, loadedAfterDelete.size());
@@ -363,16 +368,16 @@ public class CommandTest {
         Storage fileStorage = createFileBackedStorage();
 
         AddReviewCommand addReview = new AddReviewCommand(createReviewArgs("review", "oldTag"));
-        addReview.execute(reviewList, fileStorage);
+        addReview.execute(reviewList, fileStorage, authManager);
 
         AddTagsCommand addTags = new AddTagsCommand(Map.of("/default", "1", "/tag", "newTag"));
-        addTags.execute(reviewList, fileStorage);
+        addTags.execute(reviewList, fileStorage, authManager);
 
         ReviewList loadedAfterAddTag = fileStorage.loadReviews();
         assertTrue(loadedAfterAddTag.getReview(1).getTags().contains(new Tag("newTag")));
 
         DeleteTagsCommand deleteTags = new DeleteTagsCommand(Map.of("/default", "1", "/tag", "oldTag"));
-        deleteTags.execute(reviewList, fileStorage);
+        deleteTags.execute(reviewList, fileStorage, authManager);
 
         ReviewList loadedAfterDeleteTag = fileStorage.loadReviews();
         assertFalse(loadedAfterDeleteTag.getReview(1).getTags().contains(new Tag("oldTag")));
@@ -384,16 +389,16 @@ public class CommandTest {
         Storage fileStorage = createFileBackedStorage();
 
         AddReviewCommand addReview = new AddReviewCommand(createReviewArgs("review", "tag"));
-        addReview.execute(reviewList, fileStorage);
+        addReview.execute(reviewList, fileStorage, authManager);
 
         ResolveReviewCommand resolveCommand = new ResolveReviewCommand(Map.of("/default", "1"));
-        resolveCommand.execute(reviewList, fileStorage);
+        resolveCommand.execute(reviewList, fileStorage, authManager);
 
         ReviewList loadedAfterResolve = fileStorage.loadReviews();
         assertTrue(loadedAfterResolve.getReview(1).isResolved());
 
         UnresolveReviewCommand unresolveCommand = new UnresolveReviewCommand(Map.of("/default", "1"));
-        unresolveCommand.execute(reviewList, fileStorage);
+        unresolveCommand.execute(reviewList, fileStorage, authManager);
 
         ReviewList loadedAfterUnresolve = fileStorage.loadReviews();
         assertFalse(loadedAfterUnresolve.getReview(1).isResolved());
