@@ -9,16 +9,6 @@ import application.storage.Storage;
  */
 public class ExitCommand extends Command {
     @Override
-    public boolean requiresOwnerAuthentication() {
-        return false;
-    }
-
-    /**
-     * Returns true, as this command should terminate the program.
-     *
-     * @return true
-     */
-    @Override
     public boolean isTerminatingCommand() {
         return true;
     }
