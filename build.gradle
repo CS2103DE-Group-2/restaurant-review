@@ -10,10 +10,6 @@ checkstyle {
     toolVersion = '11.0.0'
 }
 
-checkstyleMain {
-    exclude 'application/ui/MealMeterGUI.java'
-}
-
 repositories {
     mavenCentral()
 }
