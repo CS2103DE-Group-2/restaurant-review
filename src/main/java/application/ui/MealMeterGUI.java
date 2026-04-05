@@ -41,7 +41,13 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.table.DefaultTableModel;
 
 import application.auth.AuthManager;
+import application.condition.Condition;
+import application.condition.EqualsToCondition;
+import application.condition.GreaterThanCondition;
 import application.condition.GreaterThanOrEqualsToCondition;
+import application.condition.LessThanCondition;
+import application.condition.LessThanOrEqualsToCondition;
+import application.condition.NotEqualsToCondition;
 import application.exception.InvalidArgumentException;
 import application.review.Criterion;
 import application.review.Rating;
@@ -97,8 +103,10 @@ public class MealMeterGUI extends JFrame {
 
     // ── Owner tab components ──────────────────────────────────────────────────
     private JTextField includeTagsField;
+    private JTextField excludeTagsField;
     private JComboBox<String> statusCombo;
     private JSpinner minRatingSpinner;
+    private JTextField conditionsField;
     private JComboBox<String> sortByCombo;
     private JComboBox<String> sortOrderCombo;
     private DefaultTableModel tableModel;
@@ -345,18 +353,26 @@ public class MealMeterGUI extends JFrame {
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // Filter row
-        JPanel filterPanel = new JPanel(new GridLayout(2, 2, 15, 15));
+        JPanel filterPanel = new JPanel(new GridLayout(3, 2, 15, 10));
         filterPanel.setOpaque(false);
 
         includeTagsField = new JTextField(15);
         filterPanel.add(createLabeledField("Include Tags:", includeTagsField));
+
+        excludeTagsField = new JTextField(15);
+        filterPanel.add(createLabeledField("Exclude Tags:", excludeTagsField));
 
         statusCombo = new JComboBox<>(new String[]{"All", "Resolved", "Outstanding"});
         statusCombo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         filterPanel.add(createLabeledCombo("Status:", statusCombo));
 
         minRatingSpinner = new JSpinner(new SpinnerNumberModel(1.0, 1.0, 5.0, 0.5));
-        filterPanel.add(createLabeledField("Min Rating:", minRatingSpinner));
+        filterPanel.add(createLabeledField("Min Overall:", minRatingSpinner));
+
+        conditionsField = new JTextField(30);
+        conditionsField.setToolTipText(
+                "e.g. food scores > 3.5, cleanliness scores >= 4, service scores == 5");
+        filterPanel.add(createLabeledField("Conditions:", conditionsField));
 
         JButton applyFilterButton = createGradientButton("Apply Filter", OCEAN_MID, OCEAN_LIGHT, Color.WHITE);
         applyFilterButton.setMaximumSize(new Dimension(150, 35));
@@ -437,12 +453,16 @@ public class MealMeterGUI extends JFrame {
             refreshTable(currentDisplayList);
         });
 
+        JButton logoutButton = createGradientButton("Logout", new Color(229, 57, 53), new Color(244, 67, 54), Color.WHITE);
+        logoutButton.addActionListener(e -> handleOwnerLogout());
+
         actionPanel.add(resolveButton);
         actionPanel.add(unresolveButton);
         actionPanel.add(tagButton);
         actionPanel.add(deleteButton);
         actionPanel.add(Box.createHorizontalStrut(20));
         actionPanel.add(refreshButton);
+        actionPanel.add(logoutButton);
 
         panel.add(actionPanel, BorderLayout.SOUTH);
         return panel;
@@ -597,6 +617,16 @@ public class MealMeterGUI extends JFrame {
         }
     }
 
+    /**
+     * Handles Owner logout. Calls logout on authManager and switches back to Patron tab.
+     */
+    private void handleOwnerLogout() {
+        authManager.logout();
+        JOptionPane.showMessageDialog(this, "You have been logged out.", "Logout Successful",
+                JOptionPane.INFORMATION_MESSAGE);
+        tabbedPane.setSelectedIndex(0); // Switch back to Patron tab
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Patron event handlers
     // ─────────────────────────────────────────────────────────────────────────
@@ -622,6 +652,12 @@ public class MealMeterGUI extends JFrame {
 
             reviewList.addReview(review);
             saveOrWarn();
+
+            // Auto-refresh owner table so new review is immediately visible
+            if (authManager.isOwnerAuthenticated()) {
+                currentDisplayList = reviewList;
+                refreshTable(currentDisplayList);
+            }
 
             JOptionPane.showMessageDialog(this,
                     "Review submitted successfully!\nOverall score: "
@@ -651,8 +687,12 @@ public class MealMeterGUI extends JFrame {
 
     private void handleOwnerFilter() {
         // Tags to include
-        String tagText = includeTagsField.getText().trim();
-        Set<Tag> includeTags = tagText.isEmpty() ? new HashSet<>() : Tag.toTags(tagText);
+        String includeText = includeTagsField.getText().trim();
+        Set<Tag> includeTags = includeText.isEmpty() ? new HashSet<>() : Tag.toTags(includeText);
+
+        // Tags to exclude
+        String excludeText = excludeTagsField.getText().trim();
+        Set<Tag> excludeTags = excludeText.isEmpty() ? new HashSet<>() : Tag.toTags(excludeText);
 
         // Resolution status
         String statusStr = (String) statusCombo.getSelectedItem();
@@ -663,19 +703,87 @@ public class MealMeterGUI extends JFrame {
             isResolved = false;
         }
 
-        // Min rating condition (only apply if > 1.0 so default shows all)
+        // Conditions: min overall rating (spinner) + free-form condition field
         double minRating = ((Number) minRatingSpinner.getValue()).doubleValue();
-        Set<application.condition.Condition> conditions = new HashSet<>();
+        Set<Condition> conditions = new HashSet<>();
         if (minRating > 1.0) {
             conditions.add(new GreaterThanOrEqualsToCondition(Criterion.OVERALL_SCORE, minRating));
         }
 
-        currentDisplayList = reviewList.filter(includeTags, new HashSet<>(), conditions, isResolved);
+        // Parse free-form conditions (e.g. "food scores > 3.5, cleanliness scores >= 4")
+        String condText = conditionsField.getText().trim();
+        if (!condText.isEmpty()) {
+            List<String> parseErrors = new ArrayList<>();
+            for (String part : condText.split(",")) {
+                try {
+                    Condition c = parseCondition(part.trim());
+                    conditions.add(c);
+                } catch (IllegalArgumentException e) {
+                    parseErrors.add(part.trim() + ": " + e.getMessage());
+                }
+            }
+            if (!parseErrors.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Could not parse the following condition(s):\n" + String.join("\n", parseErrors)
+                        + "\n\nFormat: CRITERION COMPARATOR VALUE\n"
+                        + "  CRITERION: overall scores, food scores, clean scores, service scores, tag count\n"
+                        + "  COMPARATOR: >, >=, ==, !=, <, <=\n"
+                        + "  VALUE: a number",
+                        "Condition Parse Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+
+        currentDisplayList = reviewList.filter(includeTags, excludeTags, conditions, isResolved);
         refreshTable(currentDisplayList);
 
         JOptionPane.showMessageDialog(this,
                 "Filter applied. Showing " + currentDisplayList.size() + " review(s).",
                 "Filter", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Parses a single condition string of the form "CRITERION COMPARATOR VALUE".
+     * Supported comparators: >, >=, ==, !=, <, <=
+     *
+     * @param s the condition string to parse
+     * @return a Condition object
+     * @throws IllegalArgumentException if the string cannot be parsed
+     */
+    private Condition parseCondition(String s) {
+        // Try each comparator in length-descending order to avoid ">=" being split on ">"
+        String[] comparators = {">=", "<=", "==", "!=", ">", "<"};
+        for (String op : comparators) {
+            int idx = s.indexOf(op);
+            if (idx < 0) {
+                continue;
+            }
+            String criterionStr = s.substring(0, idx).trim();
+            String valueStr = s.substring(idx + op.length()).trim();
+
+            Criterion criterion = Criterion.getCriterion(criterionStr);
+            if (criterion == Criterion.UNKNOWN) {
+                throw new IllegalArgumentException("Unknown criterion: '" + criterionStr + "'");
+            }
+
+            double value;
+            try {
+                value = Double.parseDouble(valueStr);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid value: '" + valueStr + "'");
+            }
+
+            switch (op) {
+            case ">":  return new GreaterThanCondition(criterion, value);
+            case ">=": return new GreaterThanOrEqualsToCondition(criterion, value);
+            case "==": return new EqualsToCondition(criterion, value);
+            case "!=": return new NotEqualsToCondition(criterion, value);
+            case "<":  return new LessThanCondition(criterion, value);
+            case "<=": return new LessThanOrEqualsToCondition(criterion, value);
+            default:   throw new IllegalArgumentException("Unknown comparator: '" + op + "'");
+            }
+        }
+        throw new IllegalArgumentException("No valid comparator found in: '" + s + "'");
     }
 
     private void handleOwnerSort() {
