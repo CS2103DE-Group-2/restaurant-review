@@ -4,15 +4,20 @@
 **MealMeter**
 
 ## Product Overview
-MealMeter is a restaurant feedback application that allows patrons to provide structured feedback about their dining experience directly at the point of sale. The application enables customers to rate key aspects of their visit and leave written comments that help restaurants understand customer satisfaction and identify areas for improvement.
+MealMeter is a restaurant feedback application that allows patrons to provide structured feedback about their dining
+experience directly at the point of sale.
 
-The system collects feedback in three primary categories:
+The application enables customers to rate key aspects of their visit and leave written comments that help restaurants
+understand customer satisfaction and identify areas for improvement.
+
+The system collects ratings in three primary categories:
 
 - Food quality
 - Cleanliness
 - Service
 
-In addition to ratings, patrons may submit a short written review describing their experience. This information is recorded and made available to the restaurant for analysis and service improvement.
+In addition to ratings, patrons may submit a short written review describing their experience.
+This information is recorded and made available to the restaurant for analysis and service improvement.
 
 ## Problem Statement
 Restaurants rely heavily on customer satisfaction to maintain their reputation and attract repeat customers. However, many establishments struggle to collect structured feedback from patrons during or immediately after their dining experience.
@@ -44,7 +49,6 @@ This project aims to provide restaurants with a simple and immediate way to coll
 | Restaurant Owner | delete reviews that are useless | focus on actual reviews from patrons |
 
 ## Functional Requirements
-- Restaurant Patrons should be able to leave a general rating
 - Restaurant Patrons should be able to give a more specific rating for each service category
 - Restaurant Patrons should be allowed to leave a written review
 - Restaurant Owners should be able to tag reviews with custom tags for filtering
