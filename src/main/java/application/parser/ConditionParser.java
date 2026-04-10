@@ -51,7 +51,7 @@ public class ConditionParser {
      * @param conditionAsString the string representation of the condition
      * @return the condition corresponding to the input string
      * @throws InvalidArgumentException if any part of the condition is invalid
-     * @throws MissingArgumentException if the condition is missing an argument
+     * @throws MissingArgumentException if the condition is missing
      */
     private static Condition getCondition(String conditionAsString)
             throws InvalidArgumentException, MissingArgumentException {

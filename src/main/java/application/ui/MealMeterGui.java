@@ -11,11 +11,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import application.CommandResult;
 import application.MealMeter;
-import application.command.AddReviewCommand;
-import application.command.AddTagsCommand;
-import application.command.Command;
-import application.command.DeleteReviewCommand;
-import application.command.DeleteTagsCommand;
+import application.command.*;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
@@ -95,6 +91,7 @@ public class MealMeterGui extends JFrame implements
 
     /**
      * Called when a review is submitted. Returns output message to display.
+     *
      * @param body the review body text
      * @param food the food score
      * @param clean the cleanliness score
@@ -120,10 +117,18 @@ public class MealMeterGui extends JFrame implements
     // ── OwnerPanelListener ──────────────────────────────────────────────────
 
     @Override
-    public void onFilterApplied(String includeTags, String excludeTags, String status,
-                                double minRating, String conditions) {
-        String cmd = buildFilterCommand(includeTags, excludeTags, status, minRating, conditions);
-        CommandResult result = mealMeter.handleInput();
+    public void onFilterApplied(String includeTags,
+                                String excludeTags,
+                                String status,
+                                String conditions
+    ) {
+        Command command = new FilterReviewsCommand(
+                includeTags,
+                excludeTags,
+                status,
+                conditions
+        );
+        CommandResult result = mealMeter.handleInput(command);
 
         JOptionPane.showMessageDialog(this, result.output(), "Filter Applied",
                 JOptionPane.INFORMATION_MESSAGE);

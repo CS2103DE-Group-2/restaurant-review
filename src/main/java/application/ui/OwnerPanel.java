@@ -326,11 +326,13 @@ public class OwnerPanel extends JPanel {
          * @param includeTags the tags to include in the filter
          * @param excludeTags the tags to exclude from the filter
          * @param status the status of the reviews to include in the filter
-         * @param minRating the minimum overall rating of the reviews to include in the filter
          * @param conditions the conditions to filter by, e.g. "food > 3.5"
          */
-        void onFilterApplied(String includeTags, String excludeTags, String status,
-                             double minRating, String conditions);
+        void onFilterApplied(String includeTags,
+                             String excludeTags,
+                             String status,
+                             String conditions
+        );
 
         /**
          * Called when sort is applied.

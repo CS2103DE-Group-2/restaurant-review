@@ -16,42 +16,34 @@ import application.storage.Storage;
  * Class representing a command to filter reviews.
  */
 public class FilterReviewsCommand extends Command {
-    public static final Set<String> DELIMITERS = Set.of(
-            "/hastag", //if a review contains the list of tags provided
-            "/notag", //if a review does not contain the list of tags provided
-            "/resolved", //if the review is resolved
-            "/condition" //a wrapper class indicating some boolean comparison (numeric)
-    );
-    private final Set<Tag> tagsToInclude;
-    private final Set<Tag> tagsToExclude;
-    private final Set<Condition> filterConditions;
-    private final Boolean isResolved;
+    private final String tagsToIncludeAsString;
+    private final String tagsToExcludeAsString;
+    private final String filterConditionsAsString;
+    private final String isResolvedAsString;
 
     /**
      * Constructor for FilterReviewsCommand class.
      *
-     * @param commandArgs the arguments of the command
-     * @throws InvalidArgumentException if any argument is in the wrong format
-     * @throws MissingArgumentException if a required argument is missing
+     * @param tagsToIncludeAsString the set of tags to include in the filter
+     * @param tagsToExcludeAsString the set of tags to exclude from the filter
+     * @param isResolvedAsString whether to filter by resolved status
+     * @param filterConditionsAsString the set of conditions to filter by
      */
-    public FilterReviewsCommand(Map<String, String> commandArgs)
-            throws InvalidArgumentException, MissingArgumentException {
-        String tagsToIncludeAsString = commandArgs.get("/hastag");
-        String tagsToExcludeAsString = commandArgs.get("/notag");
-        String filterConditionsAsString = commandArgs.get("/condition");
-        String isResolvedAsString = commandArgs.getOrDefault("/resolved", null);
-
-        //defaults to an empty set if not specified
-        this.tagsToInclude = Tag.toTags(tagsToIncludeAsString);
-        this.tagsToExclude = Tag.toTags(tagsToExcludeAsString);
-        this.filterConditions = ConditionParser.getConditions(filterConditionsAsString);
-
-        //if the user does not specify, we will not filter by resolved status
-        this.isResolved = isResolvedAsString == null ? null : Boolean.parseBoolean(isResolvedAsString);
+    public FilterReviewsCommand(
+            String tagsToIncludeAsString,
+            String tagsToExcludeAsString,
+            String isResolvedAsString,
+            String filterConditionsAsString
+    ) {
+        this.tagsToIncludeAsString = tagsToIncludeAsString;
+        this.tagsToExcludeAsString = tagsToExcludeAsString;
+        this.filterConditionsAsString = filterConditionsAsString;
+        this.isResolvedAsString = isResolvedAsString;
     }
 
     /**
      * Executes the command to filter the list of reviews.
+     *
      * @param reviews the list of reviews to filter
      * @param storage the storage object
      * @param manager the authentication manager
@@ -62,7 +54,13 @@ public class FilterReviewsCommand extends Command {
             ReviewList reviews,
             Storage storage,
             AuthManager manager
-    ) throws InvalidArgumentException {
+    ) throws InvalidArgumentException, MissingArgumentException {
+        Set<Tag> tagsToInclude = Tag.toTags(tagsToIncludeAsString);
+        Set<Tag> tagsToExclude = Tag.toTags(tagsToExcludeAsString);
+        Set<Condition> filterConditions = ConditionParser.getConditions(filterConditionsAsString);
+        //if the user does not specify a value for isResolved, it will be null
+        Boolean isResolved = isResolvedAsString.equals("All") ? null : Boolean.parseBoolean(isResolvedAsString);
+
         ReviewList filteredReviews = reviews.filter(
                 tagsToInclude,
                 tagsToExclude,

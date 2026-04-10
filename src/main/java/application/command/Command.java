@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import application.auth.AuthManager;
 import application.exception.InvalidArgumentException;
+import application.exception.MissingArgumentException;
 import application.review.ReviewList;
 import application.storage.Storage;
 
@@ -40,11 +41,12 @@ public abstract class Command {
      * @param manager the authentication manager
      * @return message to be displayed to the user
      * @throws InvalidArgumentException if commands do not receive their expected arguments in the correct format
+     * @throws MissingArgumentException if commands are missing required arguments
      * @throws IOException if there is an error reading or writing to the file
      */
     public abstract String execute(
             ReviewList reviews,
             Storage storage,
             AuthManager manager
-    ) throws InvalidArgumentException, IOException;
+    ) throws InvalidArgumentException, MissingArgumentException, IOException;
 }
