@@ -17,26 +17,13 @@ import application.parser.ArgumentParser;
  */
 public record Tag(String tagName) {
     /**
-     * Constructs a {@code Tag} with the specified tag name.
-     *
-     * @param tagName the name of the tag
-     * @throws IllegalArgumentException if the tag name is null or invalid
-     */
-    public Tag(String tagName) {
-        if (!isValidTagName(tagName)) {
-            throw new IllegalArgumentException("Tag name must not be null or blank.");
-        }
-        this.tagName = tagName.trim();
-    }
-
-    /**
      * Returns whether the given tag name is valid.
      *
      * @param tagName the tag name to validate
      * @return {@code true} if the tag name is non-null and non-blank,
      *     {@code false} otherwise
      */
-    private boolean isValidTagName(String tagName) {
+    private static boolean isValidTagName(String tagName) {
         return tagName != null && !tagName.isBlank();
     }
 
@@ -93,6 +80,8 @@ public record Tag(String tagName) {
         String[] listOfTagsAsString = tagsAsString.trim().split(",");
 
         return Arrays.stream(listOfTagsAsString)
+                .map(String::trim)
+                .filter(Tag::isValidTagName)
                 .map(Tag::new)
                 .collect(Collectors.toSet());
     }
