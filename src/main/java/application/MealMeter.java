@@ -145,44 +145,6 @@ public class MealMeter {
     }
 
     /**
-     * Returns a filtered view of the master review list based on the given criteria.
-     *
-     * @param includeTags comma-separated tag names that must be present, or empty
-     * @param excludeTags comma-separated tag names that must be absent, or empty
-     * @param status "Resolved", "Outstanding", or any other value for no status filter
-     * @param minRating minimum overall score threshold (applied only when greater than 1.0)
-     * @param conditions raw condition expression passed to ConditionParser, or empty
-     * @return the filtered ReviewList; falls back to the full list if parsing fails
-     */
-    public ReviewList filterReviews(String includeTags, String excludeTags, String status,
-                                    double minRating, String conditions) {
-        try {
-            Set<Tag> includeSet = new HashSet<>(Arrays.asList(parseTags(includeTags)));
-            Set<Tag> excludeSet = new HashSet<>(Arrays.asList(parseTags(excludeTags)));
-
-            Boolean isResolved = null;
-            if ("Resolved".equals(status)) {
-                isResolved = true;
-            } else if ("Outstanding".equals(status)) {
-                isResolved = false;
-            }
-
-            Set<Condition> conditionSet = new HashSet<>();
-            if (minRating > 1.0) {
-                conditionSet.add(new GreaterThanOrEqualsToCondition(
-                        Criterion.OVERALL_SCORE, minRating));
-            }
-            if (!conditions.isEmpty()) {
-                conditionSet.addAll(ConditionParser.getConditions(conditions));
-            }
-
-            return reviewList.filter(includeSet, excludeSet, conditionSet, isResolved);
-        } catch (Exception e) {
-            return reviewList;
-        }
-    }
-
-    /**
      * Returns the display list sorted by the given criterion label and order string.
      *
      * @param sortBy UI label: "Overall", "Food", "Cleanliness", "Service", or "Tag Count"
@@ -223,18 +185,6 @@ public class MealMeter {
             // rowIndex is out of bounds in the display list; return -1 to signal not found
         }
         return -1;
-    }
-
-    private static Tag[] parseTags(String csv) {
-        if (csv == null || csv.isBlank()) {
-            return new Tag[0];
-        }
-        String[] parts = csv.split(",");
-        Tag[] tags = new Tag[parts.length];
-        for (int i = 0; i < parts.length; i++) {
-            tags[i] = new Tag(parts[i].trim());
-        }
-        return tags;
     }
 
     private static Criterion mapSortByCriterion(String sortBy) {
