@@ -49,7 +49,6 @@ public class OwnerPanel extends JPanel {
     private final JTextField includeTagsField;
     private final JTextField excludeTagsField;
     private final JComboBox<String> statusCombo;
-    private final JSpinner minRatingSpinner;
     private final JTextField conditionsField;
     private JComboBox<String> sortByCombo;
     private JComboBox<String> sortOrderCombo;
@@ -89,7 +88,6 @@ public class OwnerPanel extends JPanel {
         this.excludeTagsField = new JTextField(15);
         this.statusCombo = new JComboBox<>(new String[]{"All", "Resolved", "Outstanding"});
         statusCombo.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        this.minRatingSpinner = new JSpinner(new SpinnerNumberModel(1.0, 1.0, 5.0, 0.5));
         this.conditionsField = new JTextField(30);
         conditionsField.setToolTipText(
                 "e.g. food scores > 3.5, cleanliness scores >= 4, service scores == 5");
@@ -137,7 +135,6 @@ public class OwnerPanel extends JPanel {
         filterPanel.add(GuiComponentFactory.createLabeledField("Include Tags:", includeTagsField));
         filterPanel.add(GuiComponentFactory.createLabeledField("Exclude Tags:", excludeTagsField));
         filterPanel.add(GuiComponentFactory.createLabeledCombo("Status:", statusCombo));
-        filterPanel.add(GuiComponentFactory.createLabeledField("Min Overall:", minRatingSpinner));
         filterPanel.add(GuiComponentFactory.createLabeledField("Conditions:", conditionsField));
 
         JButton applyFilterButton = GuiComponentFactory.createGradientButton(
@@ -262,9 +259,8 @@ public class OwnerPanel extends JPanel {
         String includeTags = includeTagsField.getText().trim();
         String excludeTags = excludeTagsField.getText().trim();
         String status = (String) statusCombo.getSelectedItem();
-        double minRating = ((Number) minRatingSpinner.getValue()).doubleValue();
         String conditions = conditionsField.getText().trim();
-        listener.onFilterApplied(includeTags, excludeTags, status, minRating, conditions);
+        listener.onFilterApplied(includeTags, excludeTags, status, conditions);
     }
 
     /**
