@@ -45,7 +45,7 @@ public class PatronPanel extends JPanel {
     private final JTextArea reviewTextArea;
     private final JTextField tagInputField;
     private final JLabel tagsLabel;
-    private final List<String> pendingTags;
+    private String pendingTagsAsString;
     private final PatronPanelListener listener;
 
     /**
@@ -55,7 +55,7 @@ public class PatronPanel extends JPanel {
      */
     public PatronPanel(PatronPanelListener listener) {
         this.listener = listener;
-        this.pendingTags = new ArrayList<>();
+        this.pendingTagsAsString = "";
         this.setLayout(new BorderLayout());
         this.setBorder(new EmptyBorder(0, 0, 0, 0));
 
@@ -191,7 +191,7 @@ public class PatronPanel extends JPanel {
         addTagButton.addActionListener(e -> {
             String tag = tagInputField.getText().trim();
             if (!tag.isEmpty()) {
-                pendingTags.add(tag);
+                pendingTagsAsString += tag;
                 tagInputField.setText("");
                 updateTagsLabel();
             }
@@ -204,10 +204,10 @@ public class PatronPanel extends JPanel {
     }
 
     private void updateTagsLabel() {
-        if (pendingTags.isEmpty()) {
+        if (pendingTagsAsString.isEmpty()) {
             tagsLabel.setText("No tags added yet");
         } else {
-            tagsLabel.setText("Tags: " + String.join(", ", pendingTags));
+            tagsLabel.setText("Tags: " + pendingTagsAsString);
         }
     }
 
@@ -242,7 +242,7 @@ public class PatronPanel extends JPanel {
         }
 
         String result = listener.onReviewSubmitted(body, food, clean, service,
-                Collections.unmodifiableList(pendingTags));
+                pendingTagsAsString);
 
         if (result != null && !result.isEmpty()) {
             JOptionPane.showMessageDialog(this, result, "Submit Review",
@@ -257,7 +257,7 @@ public class PatronPanel extends JPanel {
         serviceSpinner.setValue(3.0);
         reviewTextArea.setText("");
         tagInputField.setText("");
-        pendingTags.clear();
+        pendingTagsAsString = "";
         updateTagsLabel();
     }
 
@@ -300,10 +300,10 @@ public class PatronPanel extends JPanel {
          * @param food the food score
          * @param clean the cleanliness score
          * @param service the service score
-         * @param tags the list of tag names
+         * @param tagsAsString the tags to add to the review, as a string
          * @return the output message from the backend
          */
         String onReviewSubmitted(String body, double food, double clean,
-                                 double service, List<String> tags);
+                                 double service, String tagsAsString);
     }
 }

@@ -12,6 +12,8 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import application.CommandResult;
 import application.MealMeter;
+import application.command.AddReviewCommand;
+import application.command.Command;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
@@ -34,7 +36,7 @@ public class MealMeterGui extends JFrame implements
     /** Single backend entry point — no Storage, AuthManager or ReviewList held directly. */
     private final MealMeter mealMeter;
 
-    /** Current subset shown in the owner table (may differ from master list after filter/sort). */
+    /** Current subset shown in the owner table (may differ from the master list after filter/sort). */
     private ReviewList currentDisplayList;
 
     private final JTabbedPane tabbedPane;
@@ -90,14 +92,9 @@ public class MealMeterGui extends JFrame implements
 
     @Override
     public String onReviewSubmitted(String body, double food, double clean,
-                                    double service, List<String> tags) {
-        String cmd = String.format("review %s /food %.1f /clean %.1f /service %.1f",
-                body, food, clean, service);
-        if (!tags.isEmpty()) {
-            cmd += " /tag " + String.join(",", tags);
-        }
-
-        CommandResult result = mealMeter.handleInput(cmd);
+                                    double service, String tagsAsString) {
+        Command command = new AddReviewCommand(body, food, clean, service, tagsAsString);
+        CommandResult result = mealMeter.handleInput(command);
 
         // Auto-refresh owner table if logged in
         if (mealMeter.isOwnerAuthenticated()) {
@@ -114,7 +111,7 @@ public class MealMeterGui extends JFrame implements
     public void onFilterApplied(String includeTags, String excludeTags, String status,
                                 double minRating, String conditions) {
         String cmd = buildFilterCommand(includeTags, excludeTags, status, minRating, conditions);
-        CommandResult result = mealMeter.handleInput(cmd);
+        CommandResult result = mealMeter.handleInput();
 
         JOptionPane.showMessageDialog(this, result.output(), "Filter Applied",
                 JOptionPane.INFORMATION_MESSAGE);
