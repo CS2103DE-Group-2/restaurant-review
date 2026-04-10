@@ -46,30 +46,6 @@ public class Review {
     }
 
     /**
-     * Constructs a {@code Review} with the specified review body and rating.
-     * <p>
-     * The review is created with no tags and an unresolved status.
-     * </p>
-     *
-     * @param reviewBody the written review content
-     * @param rating the structured rating for the review
-     * @throws IllegalArgumentException if the review body is null or blank
-     */
-    public Review(String reviewBody, Rating rating) throws IllegalArgumentException {
-        if (reviewBody == null || reviewBody.isBlank()) {
-            reviewBody = ""; //allow empty review body
-        }
-        if (rating == null) {
-            throw new IllegalArgumentException("Rating cannot be null.");
-        }
-
-        this.reviewBody = reviewBody.trim();
-        this.rating = rating;
-        this.tags = new HashSet<>();
-        this.isResolved = false;
-    }
-
-    /**
      * Returns the written review body.
      *
      * @return the review body
@@ -88,9 +64,21 @@ public class Review {
     }
 
     /**
-     * Returns an unmodifiable view of the tags attached to this review.
+     * Returns a string containing the tag names, sorted alphabetically
      *
-     * @return an unmodifiable set of tags
+     * @return a string containing the tag names, sorted alphabetically
+     */
+    public String getTagsAsString() {
+        return tags.stream()
+                .map(Tag::getTagName)
+                .sorted()
+                .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Returns an unmodifiable set of tags associated with this review.
+     *
+     * @return an unmodifiable set of tags associated with this review
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
