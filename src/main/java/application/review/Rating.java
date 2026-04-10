@@ -54,12 +54,30 @@ public class Rating {
     }
 
     /**
+     * Returns the food score as a string.
+     *
+     * @return the food score as a string
+     */
+    public String getFoodScoreString() {
+        return String.format("%.1f", getFoodScore());
+    }
+
+    /**
      * Returns the cleanliness score.
      *
      * @return the cleanliness score
      */
     public double getCleanlinessScore() {
         return cleanlinessScore;
+    }
+
+    /**
+     * Returns the cleanliness score as a string.
+     *
+     * @return the cleanliness score as a string
+     */
+    public String getCleanlinessScoreString() {
+        return String.format("%.1f", getCleanlinessScore());
     }
 
     /**
@@ -72,12 +90,30 @@ public class Rating {
     }
 
     /**
+     *  Returns the food score as a string.
+     *
+     *  @return the food score as a string
+     */
+    public String getServiceScoreString() {
+        return String.format("%.1f", getServiceScore());
+    }
+
+    /**
      * Returns the derived overall score.
      *
      * @return the average of the three category ratings
      */
     public double getOverallScore() {
         return (foodScore + cleanlinessScore + serviceScore) / 3.0;
+    }
+
+    /**
+     * Returns the overall score as a string.
+     *
+     * @return the overall score as a string
+     */
+    public String getOverallScoreString() {
+        return String.format("%.1f", getOverallScore());
     }
 
     /**
