@@ -8,7 +8,6 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
 import application.MealMeterController;
 import application.command.CommandResult;
-import application.command.*;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
@@ -118,14 +117,8 @@ public class MealMeterGui extends JFrame implements
                                 String status,
                                 String conditions
     ) {
-        Command command = new FilterReviewsCommand(
-                includeTags,
-                excludeTags,
-                status,
-                conditions
-        );
-        CommandResult result = mealMeterController.handleInput(command);
-
+        CommandResult result = mealMeterController.filterReviews(
+                includeTags, excludeTags, status, conditions);
         JOptionPane.showMessageDialog(this, result.output(), "Filter Applied",
                 JOptionPane.INFORMATION_MESSAGE);
 
@@ -135,8 +128,7 @@ public class MealMeterGui extends JFrame implements
 
     @Override
     public void onSortApplied(String sortBy, String sortOrder) {
-        Command command = new SortReviewsCommand(sortOrder, sortBy);
-        CommandResult result = mealMeterController.handleInput(command);
+        CommandResult result = mealMeterController.sortReviews(sortOrder, sortBy);
 
         JOptionPane.showMessageDialog(this, result.output(), "Sort Applied",
                 JOptionPane.INFORMATION_MESSAGE);
@@ -147,12 +139,7 @@ public class MealMeterGui extends JFrame implements
 
     @Override
     public void onResolveReview(int rowIndex) {
-        int masterIdx = mealMeterController.getMasterIndex(currentDisplayList, rowIndex);
-        if (masterIdx < 0) {
-            return;
-        }
-        Command command = new ResolveReviewCommand(masterIdx);
-        CommandResult result = mealMeterController.handleInput(command);
+        CommandResult result = mealMeterController.resolveReview(currentDisplayList, rowIndex);
         JOptionPane.showMessageDialog(this, result.output(), "Resolve",
                 JOptionPane.INFORMATION_MESSAGE);
         ownerPanel.refreshTable(currentDisplayList);
@@ -160,12 +147,7 @@ public class MealMeterGui extends JFrame implements
 
     @Override
     public void onUnresolveReview(int rowIndex) {
-        int masterIdx = mealMeterController.getMasterIndex(currentDisplayList, rowIndex);
-        if (masterIdx < 0) {
-            return;
-        }
-        Command command = new UnresolveReviewCommand(masterIdx);
-        CommandResult result = mealMeterController.handleInput(command);
+        CommandResult result = mealMeterController.unresolveReview(currentDisplayList, rowIndex);
         JOptionPane.showMessageDialog(this, result.output(), "Unresolve",
                 JOptionPane.INFORMATION_MESSAGE);
         ownerPanel.refreshTable(currentDisplayList);
@@ -186,14 +168,8 @@ public class MealMeterGui extends JFrame implements
                 return;
             }
 
-            int masterIdx = mealMeterController.getMasterIndex(currentDisplayList, rowIndex);
-            if (masterIdx < 0) {
-                return;
-            }
-
             String trimmed = input.trim();
-            Command command = new AddTagsCommand(masterIdx, trimmed);
-            CommandResult result = mealMeterController.handleInput(command);
+            CommandResult result = mealMeterController.addTags(currentDisplayList, rowIndex, trimmed);
 
             JOptionPane.showMessageDialog(this, result.output(), "Tags",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -219,14 +195,8 @@ public class MealMeterGui extends JFrame implements
                 return;
             }
 
-            int masterIdx = mealMeterController.getMasterIndex(currentDisplayList, rowIndex);
-            if (masterIdx < 0) {
-                return;
-            }
-
             String trimmed = input.trim();
-            Command command = new DeleteTagsCommand(masterIdx, trimmed);
-            CommandResult result = mealMeterController.handleInput(command);
+            CommandResult result = mealMeterController.deleteTags(currentDisplayList, rowIndex, trimmed);
 
             JOptionPane.showMessageDialog(this, result.output(), "Tags",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -246,12 +216,7 @@ public class MealMeterGui extends JFrame implements
             return;
         }
 
-        int masterIdx = mealMeterController.getMasterIndex(currentDisplayList, rowIndex);
-        if (masterIdx < 0) {
-            return;
-        }
-        Command command = new DeleteReviewCommand(masterIdx);
-        CommandResult result = mealMeterController.handleInput(command);
+        CommandResult result = mealMeterController.deleteReview(currentDisplayList, rowIndex);
         JOptionPane.showMessageDialog(this, result.output(), "Delete",
                 JOptionPane.INFORMATION_MESSAGE);
         currentDisplayList = result.reviews();
@@ -267,8 +232,7 @@ public class MealMeterGui extends JFrame implements
 
     @Override
     public void onLogout() {
-        Command command = new LogoutCommand();
-        CommandResult result = mealMeterController.handleInput(command);
+        CommandResult result = mealMeterController.logout();
         JOptionPane.showMessageDialog(this, result.output(), "Logout",
                 JOptionPane.INFORMATION_MESSAGE);
         tabbedPane.setSelectedIndex(PATRON_TAB_INDEX);
@@ -284,8 +248,7 @@ public class MealMeterGui extends JFrame implements
 
         if (option == JOptionPane.OK_OPTION) {
             String entered = new String(pwField.getPassword());
-            Command command = new LoginCommand(entered);
-            CommandResult result = mealMeterController.handleInput(command);
+            CommandResult result = mealMeterController.login(entered);
 
             if (mealMeterController.isOwnerAuthenticated()) {
                 ownerPanel.refreshTable(currentDisplayList);

@@ -5,9 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import application.auth.AuthManager;
-import application.command.AddReviewCommand;
-import application.command.Command;
-import application.command.CommandResult;
+import application.command.*;
 import application.exception.InvalidArgumentException;
 import application.review.Review;
 import application.review.ReviewList;
@@ -156,6 +154,16 @@ public class MealMeterController {
         return -1;
     }
 
+    /**
+     * Submits a new review.
+     *
+     * @param reviewBody review body
+     * @param foodScore the food score
+     * @param cleanlinessScore the cleanliness score
+     * @param serviceScore the service score
+     * @param tagsAsString the tags to add to the review, as a string
+     * @return a {@code CommandResult} object containing the output message and the updated review list
+     */
     public CommandResult submitReview(
             String reviewBody,
             Double foodScore,
@@ -164,6 +172,129 @@ public class MealMeterController {
             String tagsAsString
     ) {
         Command command = new AddReviewCommand(reviewBody, foodScore, cleanlinessScore, serviceScore, tagsAsString);
+        return handleInput(command);
+    }
+
+    /**
+     * Filters the review list based on the given criteria.
+     *
+     * @param includeTags 1 or more tags to include in the filter, separated by commas
+     * @param excludeTags 1 or more tags to exclude from the filter, separated by commas
+     * @param status whether to filter by resolved status (true/false)
+     * @param conditions 1 or more conditions to filter by, separated by commas
+     * @return a {@code CommandResult} object containing the output message and the filtered review list
+     */
+    public CommandResult filterReviews(String includeTags,
+                                       String excludeTags,
+                                       String status,
+                                       String conditions
+    ) {
+        Command command = new FilterReviewsCommand(
+                includeTags,
+                excludeTags,
+                status,
+                conditions
+        );
+        return handleInput(command);
+    }
+
+    /**
+     * Sorts the review list based on the given criterion and sort order.
+     *
+     * @param sortBy 1 or more criteria to sort by, separated by commas
+     * @param sortOrder "Ascending" or "Descending"
+     * @return a {@code CommandResult} object containing the output message and the sorted review list
+     */
+    public CommandResult sortReviews(String sortBy, String sortOrder) {
+        Command command = new SortReviewsCommand(sortOrder, sortBy);
+        return handleInput(command);
+    }
+
+    /**
+     * Resolves a review in the displayed review list at the given row index.
+     *
+     * @param displayedReviews the filtered or sorted display list
+     * @param rowIndex the 1-based row index within the display list
+     * @return a {@code CommandResult} object containing the output message and the updated review list
+     */
+    public CommandResult resolveReview(ReviewList displayedReviews, int rowIndex) {
+        int index = getMasterIndex(displayedReviews, rowIndex);
+        Command command = new ResolveReviewCommand(index);
+        return handleInput(command);
+    }
+
+    /**
+     * Unresolves a review in the displayed review list at the given row index.
+     *
+     * @param displayedReviews the filtered or sorted display list
+     * @param rowIndex the 1-based row index within the display list
+     * @return a {@code CommandResult} object containing the output message and the updated review list
+     */
+    public CommandResult unresolveReview(ReviewList displayedReviews, int rowIndex) {
+        int index = getMasterIndex(displayedReviews, rowIndex);
+        Command command = new UnresolveReviewCommand(index);
+        return handleInput(command);
+    }
+
+    /**
+     * Adds tags to a review in the displayed review list at the given row index.
+     *
+     * @param displayedReviews the filtered or sorted display list
+     * @param rowIndex the 1-based row index within the display list
+     * @param tags the tags to add, separated by commas
+     * @return a {@code CommandResult} object containing the output message and the updated review list
+     */
+    public CommandResult addTags(ReviewList displayedReviews, int rowIndex, String tags) {
+        int index = getMasterIndex(displayedReviews, rowIndex);
+        Command command = new AddTagsCommand(index, tags);
+        return handleInput(command);
+    }
+
+    /**
+     * Deletes tags from a review in the displayed review list at the given row index.
+     *
+     * @param displayedReviews the filtered or sorted display list
+     * @param rowIndex the 1-based row index within the display list
+     * @param tags the tags to delete, separated by commas
+     * @return a {@code CommandResult} object containing the output message and the updated review list
+     */
+    public CommandResult deleteTags(ReviewList displayedReviews, int rowIndex, String tags) {
+        int index = getMasterIndex(displayedReviews, rowIndex);
+        Command command = new DeleteTagsCommand(index, tags);
+        return handleInput(command);
+    }
+
+    /**
+     * Deletes a review in the displayed review list at the given row index.
+     *
+     * @param displayedReviews the filtered or sorted display list
+     * @param rowIndex the 1-based row index within the display list
+     * @return a {@code CommandResult} object containing the output message and the updated review list
+     */
+    public CommandResult deleteReview(ReviewList displayedReviews, int rowIndex) {
+        int index = getMasterIndex(displayedReviews, rowIndex);
+        Command command = new DeleteReviewCommand(index);
+        return handleInput(command);
+    }
+
+    /**
+     * Logs out the owner.
+     *
+     * @return a {@code CommandResult} object containing the output message
+     */
+    public CommandResult logout() {
+        Command command = new LogoutCommand();
+        return handleInput(command);
+    }
+
+    /**
+     * Logs in the owner with the given password.
+     *
+     * @param password the password to use for login
+     * @return a {@code CommandResult} object containing the output message
+     */
+    public CommandResult login(String password) {
+        Command command = new LoginCommand(password);
         return handleInput(command);
     }
 }
