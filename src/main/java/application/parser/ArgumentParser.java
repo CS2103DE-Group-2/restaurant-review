@@ -40,4 +40,29 @@ public class ArgumentParser {
 
         return score;
     }
+
+    /**
+     * Converts a string to a boolean value.
+     * @param resolvedAsString the string to convert
+     * @return the boolean value corresponding to the string
+     */
+    public static Boolean toResolvedStatus(String resolvedAsString) {
+        Boolean isResolved;
+        //if the user does not specify a value for isResolved, it will be null
+        switch (resolvedAsString.toLowerCase().strip()) {
+        case "resolved":
+            isResolved = true;
+            break;
+        case "outstanding":
+            isResolved = false;
+            break;
+        case "all":
+            //fallthrough
+        default:
+            isResolved = null;
+            break;
+        }
+
+        return isResolved;
+    }
 }

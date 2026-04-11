@@ -6,6 +6,7 @@ import application.auth.AuthManager;
 import application.condition.Condition;
 import application.exception.InvalidArgumentException;
 import application.exception.MissingArgumentException;
+import application.parser.ArgumentParser;
 import application.parser.ConditionParser;
 import application.review.ReviewList;
 import application.review.Tag;
@@ -57,9 +58,7 @@ public class FilterReviewsCommand extends Command {
         Set<Tag> tagsToInclude = Tag.toTags(tagsToIncludeAsString);
         Set<Tag> tagsToExclude = Tag.toTags(tagsToExcludeAsString);
         Set<Condition> filterConditions = ConditionParser.getConditions(filterConditionsAsString);
-        //if the user does not specify a value for isResolved, it will be null
-        Boolean isResolved = isResolvedAsString.equals("All") ? null : Boolean.parseBoolean(isResolvedAsString);
-
+        Boolean isResolved = ArgumentParser.toResolvedStatus(isResolvedAsString);
         ReviewList filteredReviews = reviews.filter(
                 tagsToInclude,
                 tagsToExclude,

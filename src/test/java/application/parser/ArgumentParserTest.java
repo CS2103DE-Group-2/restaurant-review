@@ -2,6 +2,7 @@ package application.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,5 +56,30 @@ public class ArgumentParserTest {
         // Partition: Non-numeric string
         assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toDouble("abc"));
         assertThrows(InvalidArgumentException.class, () -> ArgumentParser.toDouble("12.34.56"));
+    }
+
+    @Test
+    public void toResolvedStatus_resolved_returnsTrue() {
+        // Partition: "Resolved" input
+        assertTrue(ArgumentParser.toResolvedStatus("Resolved"));
+    }
+
+    @Test
+    public void toResolvedStatus_unresolved_returnsFalse() {
+        // Partition: "Unresolved" input
+        assertFalse(ArgumentParser.toResolvedStatus("Outstanding"));
+    }
+
+    @Test
+    public void toResolvedStatus_all_returnsNull() {
+        // Partition: "All" input
+        assertNull(ArgumentParser.toResolvedStatus("All"));
+    }
+
+    @Test
+    public void toResolvedStatus_invalidInput_returnsNull() {
+        // Partition: Invalid or default input
+        assertNull(ArgumentParser.toResolvedStatus("SomethingElse"));
+        assertNull(ArgumentParser.toResolvedStatus(""));
     }
 }
