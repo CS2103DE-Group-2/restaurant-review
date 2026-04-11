@@ -136,26 +136,6 @@ public class MealMeter {
     }
 
     /**
-     * Returns the display list sorted by the given criterion label and order string.
-     *
-     * @param sortBy UI label: "Overall", "Food", "Cleanliness", "Service", or "Tag Count"
-     * @param sortOrder "Descending" for descending order, anything else for ascending
-     * @param displayList the list to sort
-     * @return the sorted ReviewList; returns displayList unchanged if sorting fails
-     */
-    public ReviewList sortReviews(String sortBy, String sortOrder, ReviewList displayList) {
-        try {
-            Criterion criterion = mapSortByCriterion(sortBy);
-            SortOrder order = "Descending".equals(sortOrder)
-                    ? SortOrder.DESCENDING
-                    : SortOrder.ASCENDING;
-            return reviewList.sort(criterion, order, displayList);
-        } catch (InvalidArgumentException e) {
-            return displayList;
-        }
-    }
-
-    /**
      * Returns the 1-based master-list index of the review at rowIndex in the display list.
      * Uses reference equality since filter() returns the same Review objects.
      *
@@ -176,20 +156,5 @@ public class MealMeter {
             // rowIndex is out of bounds in the display list; return -1 to signal not found
         }
         return -1;
-    }
-
-    private static Criterion mapSortByCriterion(String sortBy) {
-        switch (sortBy) {
-        case "Food":
-            return Criterion.FOOD_SCORE;
-        case "Cleanliness":
-            return Criterion.CLEANLINESS_SCORE;
-        case "Service":
-            return Criterion.SERVICE_SCORE;
-        case "Tag Count":
-            return Criterion.TAG_COUNT;
-        default:
-            return Criterion.OVERALL_SCORE;
-        }
     }
 }
