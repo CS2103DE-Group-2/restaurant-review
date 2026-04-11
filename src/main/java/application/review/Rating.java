@@ -1,12 +1,10 @@
 package application.review;
 
-import application.exception.InvalidArgumentException;
-
 /**
  * Represents the structured ratings for a dining experience.
  * <p>
- * Each review stores ratings for food, cleanliness, and service.
- * An overall rating can be derived from these category ratings.
+ * Each review stores scores for food, cleanliness, and service.
+ * An overall score can be derived from these category scores.
  * </p>
  */
 public class Rating {
@@ -21,8 +19,8 @@ public class Rating {
      * Constructs a {@code Rating} with scores for food, cleanliness, and service.
      *
      * @param foodScore the food score
-     * @param cleanlinessScore the cleanliness rating
-     * @param serviceScore the service rating
+     * @param cleanlinessScore the cleanliness score
+     * @param serviceScore the service score
      */
     public Rating(double foodScore,
                   double cleanlinessScore,
