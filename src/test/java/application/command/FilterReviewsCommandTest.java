@@ -111,7 +111,7 @@ public class FilterReviewsCommandTest {
         FilterReviewsCommand cmd = new FilterReviewsCommand(
                 "",
                 "",
-                "true",
+                "Resolved",
                 ""
         );
         CommandResult result = cmd.execute(reviewList, storage, authManager);
