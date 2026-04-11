@@ -1,4 +1,4 @@
-package application;
+package application.command;
 
 import application.review.ReviewList;
 

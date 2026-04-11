@@ -1,5 +1,6 @@
 package application;
 
+import application.command.CommandResult;
 import application.ui.Ui;
 
 /**

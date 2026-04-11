@@ -1,7 +1,5 @@
 package application.ui;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -9,7 +7,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
-import application.CommandResult;
+import application.command.CommandResult;
 import application.MealMeter;
 import application.command.*;
 import application.exception.InvalidArgumentException;

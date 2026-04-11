@@ -1,23 +1,17 @@
 package application;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import application.auth.AuthManager;
 import application.command.Command;
-import application.condition.Condition;
-import application.condition.GreaterThanOrEqualsToCondition;
+import application.command.CommandResult;
 import application.exception.InvalidArgumentException;
-import application.parser.ConditionParser;
 import application.review.Criterion;
 import application.review.Review;
 import application.review.ReviewList;
 import application.review.SortOrder;
-import application.review.Tag;
 import application.storage.Storage;
 import application.storage.StorageLoadResult;
 
