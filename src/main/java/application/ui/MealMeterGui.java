@@ -128,7 +128,7 @@ public class MealMeterGui extends JFrame implements
 
     @Override
     public void onSortApplied(String sortBy, String sortOrder) {
-        CommandResult result = mealMeterController.sortReviews(sortOrder, sortBy);
+        CommandResult result = mealMeterController.sortReviews(sortBy, sortOrder);
 
         JOptionPane.showMessageDialog(this, result.output(), "Sort Applied",
                 JOptionPane.INFORMATION_MESSAGE);
