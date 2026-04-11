@@ -73,15 +73,12 @@ public class FilterReviewsCommand extends Command {
                 Tags to include: %s
                 Tags to exclude: %s
                 Filter criteria: %s
-                Resolved status: %s
-                Filtered reviews:
-                %s""",
+                Resolved status: %s""",
                         tagsToInclude.isEmpty() ? "None specified" : tagsToInclude,
                         tagsToExclude.isEmpty() ? "None specified" : tagsToExclude,
                         filterConditions.isEmpty() ? "None specified" : filterConditions.stream()
                                 .filter(Condition::shouldDisplay).toList(),
-                        isResolved == null ? "Not specified" : isResolved,
-                        filteredReviews
+                        isResolved == null ? "Not specified" : isResolved
                 ),
                 isTerminatingCommand(),
                 filteredReviews

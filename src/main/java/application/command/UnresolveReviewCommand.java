@@ -42,7 +42,7 @@ public class UnresolveReviewCommand extends Command {
         storage.saveReviews(reviews);
 
         return new CommandResult(
-                String.format("%s\nmarked as outstanding!", review),
+                String.format("Review %d marked as outstanding!", index),
                 isTerminatingCommand(),
                 reviews
         );

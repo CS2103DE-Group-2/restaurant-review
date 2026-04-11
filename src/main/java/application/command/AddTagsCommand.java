@@ -59,9 +59,7 @@ public class AddTagsCommand extends Command {
         return new CommandResult(
                 String.format("""
                 Existing tags not added: %s
-                New tags added: %s
-                Updated review:
-                %s""", existingTags, nonExistentTags, review),
+                New tags added: %s""", existingTags, nonExistentTags),
                 isTerminatingCommand(),
                 reviews
         );

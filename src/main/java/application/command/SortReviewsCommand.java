@@ -46,12 +46,8 @@ public class SortReviewsCommand extends Command {
 
         return new CommandResult(
                 String.format("""
-                Sorted by %s in %s order:
-                %s
-                """,
-                        sortCriterion,
-                        sortOrder,
-                        sortedReviewList),
+                Sorted reviews by %s in %s order!
+                """, sortCriterion, sortOrder),
                 isTerminatingCommand(),
                 sortedReviewList
         );

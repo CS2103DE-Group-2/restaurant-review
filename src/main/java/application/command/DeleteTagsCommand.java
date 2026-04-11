@@ -59,9 +59,7 @@ public class DeleteTagsCommand extends Command {
         return new CommandResult(
                 String.format("""
                 Tags that do not exist in review: %s
-                Tags deleted: %s
-                Updated review:
-                %s""", nonExistentTags, existingTags, review),
+                Tags deleted: %s""", nonExistentTags, existingTags),
                 isTerminatingCommand(),
                 reviews
         );

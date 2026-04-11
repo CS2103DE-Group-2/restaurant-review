@@ -42,7 +42,7 @@ public class ResolveReviewCommand extends Command {
         storage.saveReviews(reviews);
 
         return new CommandResult(
-                String.format("%s\nmarked as resolved!", review),
+                String.format("Review %d marked as resolved!", index),
                 isTerminatingCommand(),
                 reviews
         );

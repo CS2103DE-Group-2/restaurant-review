@@ -42,7 +42,7 @@ public class DeleteReviewCommand extends Command {
         storage.saveReviews(reviews);
 
         return new CommandResult(
-                String.format("%s\ndeleted!", review),
+                String.format("Review %d deleted!", index),
                 isTerminatingCommand(),
                 reviews
         );
