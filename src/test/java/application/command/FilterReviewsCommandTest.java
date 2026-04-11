@@ -50,7 +50,7 @@ public class FilterReviewsCommandTest {
                 Tag.toTags("tag2")
         );
         r2.markResolved();
-        
+
         reviewList.addReview(r1);
         reviewList.addReview(r2);
     }

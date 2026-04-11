@@ -114,7 +114,7 @@ public class MealMeterControllerTest {
         // Partition: Logout via wrapper method
         mealMeterController.login("secret");
         assertTrue(mealMeterController.isOwnerAuthenticated());
-        
+
         CommandResult result = mealMeterController.logout();
         assertEquals("Successfully logged out!", result.output());
         assertFalse(mealMeterController.isOwnerAuthenticated());
@@ -161,7 +161,7 @@ public class MealMeterControllerTest {
 
         mealMeterController.login("secret");
         ReviewList current = mealMeterController.getReviewList();
-        
+
         // Add a review first so there is something to act on at index 1
         mealMeterController.submitReview(
                 "test",
@@ -170,7 +170,7 @@ public class MealMeterControllerTest {
                 5.0,
                 ""
         );
-        
+
         assertNotNull(mealMeterController.resolveReview(current, 1));
         assertNotNull(mealMeterController.unresolveReview(current, 1));
         assertNotNull(mealMeterController.addTags(current, 1, "tag1"));
