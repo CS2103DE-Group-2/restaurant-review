@@ -192,9 +192,9 @@ public class PatronPanel extends JPanel {
                     pendingTagsAsString = tag;
                 } else {
                     pendingTagsAsString += (", " + tag);
-                    tagInputField.setText("");
-                    updateTagsLabel();
                 }
+                tagInputField.setText("");
+                updateTagsLabel();
             }
         });
 
