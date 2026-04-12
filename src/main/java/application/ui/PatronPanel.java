@@ -82,7 +82,7 @@ public class PatronPanel extends JPanel {
         this.foodSpinner = createRatingSpinner();
         this.cleanSpinner = createRatingSpinner();
         this.serviceSpinner = createRatingSpinner();
-        contentPanel.add(createModernCard(createRatingPanel(), "Rate Your Experience"));
+        contentPanel.add(createModernCard(createRatingPanel(), "Rate Your Experience (1-5)"));
         contentPanel.add(Box.createVerticalStrut(20));
 
         this.reviewTextArea = createReviewTextArea();
