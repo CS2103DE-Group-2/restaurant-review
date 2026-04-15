@@ -16,7 +16,7 @@ The system collects ratings in three primary categories:
 - Cleanliness
 - Service
 
-In addition to ratings, patrons may submit a short written review describing their experience.
+In addition to ratings, patrons must submit a short written review describing their experience.
 This information is recorded and made available to the restaurant for analysis and service improvement.
 
 ## Problem Statement
@@ -25,7 +25,7 @@ Restaurants rely heavily on customer satisfaction to maintain their reputation a
 Current feedback mechanisms such as online review platforms often suffer from several limitations:
 
 - Feedback is delayed or forgotten after customers leave the restaurant
-- Reviews are often unstructured and difficult to analyze
+- Reviews are often unstructured and challenging to analyse
 - Restaurants may not receive feedback until long after the dining experience
 - Restaurants may not be able to distinguish genuine reviews from bad-faith actors leaving review bombs
 
@@ -49,11 +49,12 @@ This project aims to provide restaurants with a simple and immediate way to coll
 | Restaurant Owner | delete reviews that are useless | focus on actual reviews from patrons |
 
 ## Functional Requirements
-- Restaurant Patrons should be able to give a more specific rating for each service category
+- Restaurant Patrons should be able to give specific ratings for each service category
 - Restaurant Patrons should be allowed to leave a written review
 - Restaurant Owners should be able to tag reviews with custom tags for filtering
 - Restaurant Owners should be able to view all patron reviews
 - Restaurant Owners should be able to filter reviews by specified criteria
+- Restaurant Owners should be able to sort reviews by specified criteria
 - Restaurant Owners should be able to mark reviews as resolved or outstanding
 - Restaurant Owners should be able to delete reviews
 
@@ -70,5 +71,4 @@ This project aims to provide restaurants with a simple and immediate way to coll
 - The system should not lose more than 5 minutes of work in the event of an application crash
 
 ### Security
-- Passwords should be stored securely
 - The application should not have a server component
