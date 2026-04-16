@@ -107,7 +107,7 @@ public class ReviewList {
      * @param index the index to check
      * @return {@code true} if the index is valid, {@code false} otherwise
      */
-    public boolean isValidIndex(int index) {
+    private boolean isValidIndex(int index) {
         return index >= 1 && index <= reviews.size();
     }
 
