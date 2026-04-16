@@ -14,11 +14,11 @@ Submitted feedback is processed by the application and stored locally for later 
 ---
 
 ## Architecture Design
-The system follows a **3-tier architecture** consisting of:
+The system follows a **Model-View-Controller (MVC) design pattern** consisting of:
 
-- **User Interface Layer**
-- **Logic Layer**
-- **Storage Layer**
+- **View: User Interface Layer**
+- **Controller: Controller Layer**
+- **Model: Model Layer**
 
 This architecture separates user interaction, application logic, and data persistence so that each part of the system remains easier to maintain, extend, and test.
 
@@ -38,7 +38,9 @@ This architecture separates user interaction, application logic, and data persis
 - Shows system messages and feedback to the user
 
 #### Key Classes
-- `Ui`
+- `MealMeterGui`
+- `OwnerPanel`
+- `PatronPanel`
 
 ---
 
