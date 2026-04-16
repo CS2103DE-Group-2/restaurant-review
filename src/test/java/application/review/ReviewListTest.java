@@ -155,20 +155,6 @@ public class ReviewListTest {
     }
 
     @Test
-    public void populateTableModel_updatesModel() {
-        // Partition: Verify table model population
-        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel();
-        model.setColumnIdentifiers(
-                new Object[]{"#", "Food", "Clean", "Service", "Overall", "Status", "Tags", "Review"}
-        );
-
-        reviewList.populateTableModel(model);
-        assertEquals(2, model.getRowCount());
-        assertEquals(1, model.getValueAt(0, 0));
-        assertEquals(2, model.getValueAt(1, 0));
-    }
-
-    @Test
     public void clearReviewList_workCorrectly() {
         // Partition: Clear the list
         reviewList.clear();

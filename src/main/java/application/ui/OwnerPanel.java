@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import application.review.Review;
 import application.review.ReviewList;
 
 
@@ -263,7 +265,11 @@ public class OwnerPanel extends JPanel {
      * @param reviews the reviews to display
      */
     public void refreshTable(ReviewList reviews) {
-        reviews.populateTableModel(tableModel);
+        List<Review> reviewList = reviews.getAllReviews();
+        tableModel.setRowCount(0);
+        for (int i = 0; i < reviewList.size(); i++) {
+            tableModel.addRow(reviewList.get(i).toRow(i + 1));
+        }
     }
 
     /**
