@@ -1,4 +1,4 @@
-# API Documentation
+# Logic API Documentation
 
 This file documents the important APIs exposed by `MealMeterController` to `MealMeterGui`.
 
