@@ -1,5 +1,3 @@
-Paste this directly into your `.md` file:
-
 # Storage API Documentation
 
 This section describes the API of the `Storage` component.
