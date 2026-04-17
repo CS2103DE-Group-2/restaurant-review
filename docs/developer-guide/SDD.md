@@ -101,6 +101,12 @@ The system follows a 4-layer architecture structure consisting of:
 #### `Ui` Class Diagram
 ![Ui Class Diagram](architecture/ui-class-diagram.png)
 
+The above depicts the class diagram of the `Ui` component. This component is responsible for displaying the GUI of the
+application. It is made up of the `MealMeterGui` class, which contains the two screens (`PatronPanel` and `OwnerPanel`)
+available to the user.
+
+The `MealMeterGui` class communicates with the `Model` component via the `Logic` component.
+
 #### `Logic` Class Diagram
 ![Logic Class Diagram](architecture/logic-class-diagram.png)
 

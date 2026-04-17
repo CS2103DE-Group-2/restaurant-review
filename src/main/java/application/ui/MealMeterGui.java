@@ -281,7 +281,7 @@ public class MealMeterGui extends JFrame implements
         JOptionPane.showMessageDialog(this, result.output(), "Logout",
                 JOptionPane.INFORMATION_MESSAGE);
         tabbedPane.setSelectedIndex(PATRON_TAB_INDEX);
-        currentDisplayList.clear();
+        currentDisplayList = new ReviewList();
         ownerPanel.refreshTable(currentDisplayList);
     }
 
@@ -298,6 +298,7 @@ public class MealMeterGui extends JFrame implements
             CommandResult result = mealMeterController.login(entered);
 
             if (mealMeterController.isOwnerAuthenticated()) {
+                currentDisplayList = mealMeterController.getReviewList();
                 ownerPanel.refreshTable(currentDisplayList);
                 JOptionPane.showMessageDialog(this, result.output(), "Login Successful",
                         JOptionPane.INFORMATION_MESSAGE);
