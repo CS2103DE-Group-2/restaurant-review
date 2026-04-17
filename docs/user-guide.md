@@ -47,7 +47,7 @@ MealMeter is a restaurant feedback application that allows patrons to submit str
 
 ## Video Demonstration
 
-[Watch the MealMeter demo video here!](video/demo-video.mp4)
+[Watch the MealMeter demo video here!](https://github.com/Ianos828/restaurant-review-fork/blob/main/docs/video/demo-video.mp4)
 
 ## Using MealMeter
 
