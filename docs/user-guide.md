@@ -47,13 +47,7 @@ MealMeter is a restaurant feedback application that allows patrons to submit str
 
 ## Video Demonstration
 
-**Demo video placeholder:** insert the final demo video link here.
-
-Example format:
-
-```md
-[Watch the MealMeter demo video here](<INSERT_DEMO_VIDEO_LINK_HERE>)
-```
+[Watch the MealMeter demo video here!](video/demo-video.mp4)
 
 ## Using MealMeter
 
