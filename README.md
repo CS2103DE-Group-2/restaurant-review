@@ -330,5 +330,3 @@ No. Owner features require successful login through the Owner Management tab.
 
 No. MealMeter saves review changes automatically.
 
-
-You have reached the end of the MealMeter User Guide.
