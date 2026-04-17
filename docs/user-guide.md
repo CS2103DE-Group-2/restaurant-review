@@ -82,7 +82,6 @@ Notes:
 
 - A written review is required by the GUI before submission.
 - Tags are optional.
-- Tags are treated case-insensitively, so `service` and `Service` are treated as the same tag.
 - Reviews are saved automatically after submission.
 
 ![Patron Feedback form](docs/gui-images/patron-feedback-form.png)
@@ -179,6 +178,11 @@ Supported criteria are:
 - `cleanliness`
 - `service`
 - `overall`
+- `tag count`
+
+Partial matching is also available for criteria such as:
+- `fo` matches `food`
+- `tag` matches `tag count`
 
 Supported operators are:
 
